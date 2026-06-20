@@ -8,4 +8,5 @@ import java.util.List;
 public interface VocabularyRepository
         extends JpaRepository<Vocabulary, Long> {
     List<Vocabulary> findByTopicId(Long topicId);
+    List<Vocabulary> findByWordContainingIgnoreCase(String keyword);
 }

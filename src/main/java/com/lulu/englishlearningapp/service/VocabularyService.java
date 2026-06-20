@@ -100,4 +100,12 @@ public class VocabularyService {
         return vocabularyRepository.findAll(pageable)
                 .map(this::mapToResponse);
     }
+    public List<VocabularyResponse> searchVocabulary(String keyword) {
+
+        return vocabularyRepository
+                .findByWordContainingIgnoreCase(keyword)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
 }

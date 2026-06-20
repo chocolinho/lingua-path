@@ -1,3 +1,3 @@
 
-GET http://localhost:8080/api/vocabularies/page?page=0&size=5
+GET http://localhost:8080/api/vocabularies/search?keyword=dog
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aGFpQGdtYWlsLmNvbSIsImlhdCI6MTc4MTk0MzcwNSwiZXhwIjoxNzgyMDMwMTA1fQ.YDKWqzds_2YG574RxStIq3qPWtUPh_Ktx4BzEqKRN4k

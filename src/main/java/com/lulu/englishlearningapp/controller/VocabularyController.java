@@ -53,5 +53,11 @@ public class VocabularyController {
 
         return vocabularyService.getVocabulariesWithPagination(page, size);
     }
+    @GetMapping("/search")
+    public List<VocabularyResponse> searchVocabulary(
+            @RequestParam String keyword) {
+
+        return vocabularyService.searchVocabulary(keyword);
+    }
     }
 
