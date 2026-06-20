@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/english_learning_db
+    username: root
+    password: thai2004
