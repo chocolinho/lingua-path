@@ -4,13 +4,22 @@ import {
     getVocabularies,
     getQuizResults,
 } from "../services/dashboardService";
-
+import { useAuth } from "../context/AuthContext";
 import StatCard from "../components/StatCard";
 import LearningCard from "../components/LearningCard";
 import ProgressCard from "../components/ProgressCard";
 import BadgeCard from "../components/BadgeCard";
 
 function Dashboard() {
+    const { user } = useAuth();
+
+    const displayName =
+        user?.name ||
+        user?.fullName ||
+        user?.username ||
+        user?.email ||
+        "Learner";
+
     const [stats, setStats] = useState({
         topics: 0,
         vocabularies: 0,
@@ -117,7 +126,7 @@ function Dashboard() {
             <section className="bg-gradient-to-r from-[#58CC02] to-[#1CB0F6] rounded-[2rem] p-6 md:p-8 text-white shadow-lg overflow-hidden relative">
                 <div className="relative z-10 max-w-2xl">
                     <p className="text-white/80 font-bold mb-2">
-                        Welcome back, Thai 👋
+                        Welcome back, {displayName} 👋
                     </p>
 
                     <h1 className="text-3xl md:text-5xl font-black leading-tight">

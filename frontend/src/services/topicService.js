@@ -10,6 +10,11 @@ export const createTopic = async (topic) => {
     return response.data;
 };
 
+export const updateTopic = async (id, topic) => {
+    const response = await axiosClient.put(`/api/topics/${id}`, topic);
+    return response.data;
+};
+
 export const deleteTopic = async (id) => {
     await axiosClient.delete(`/api/topics/${id}`);
 };

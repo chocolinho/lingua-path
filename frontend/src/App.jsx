@@ -7,7 +7,7 @@ import Topics from "./pages/Topics";
 import Vocabularies from "./pages/Vocabularies";
 import QuizResults from "./pages/QuizResults";
 import Learn from "./pages/Learn";
-
+import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 
@@ -17,7 +17,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
-
+                <Route path="/register" element={<Register />} />
                 <Route
                     element={
                         <ProtectedRoute>

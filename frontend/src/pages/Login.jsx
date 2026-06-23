@@ -55,8 +55,17 @@ function Login() {
             loginSuccess(data.token);
             navigate("/dashboard");
         } catch (error) {
-            setErrorMessage("Login failed. Please check your email or password.");
             console.error(error);
+
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                setErrorMessage("Email or password is incorrect.");
+            } else if (error.response?.status === 404) {
+                setErrorMessage("Login API not found. Please check backend endpoint.");
+            } else if (error.code === "ERR_NETWORK") {
+                setErrorMessage("Cannot connect to backend server.");
+            } else {
+                setErrorMessage("Login failed. Please try again.");
+            }
         } finally {
             setLoading(false);
         }
