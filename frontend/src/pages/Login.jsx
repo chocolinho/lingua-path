@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { login } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const { loginSuccess } = useAuth();
     const navigate = useNavigate();
+
     const handleLogin = async (e) => {
         e.preventDefault();
 
         try {
             const data = await login(email, password);
 
-            localStorage.setItem("token", data.token);
-
+            loginSuccess(data.token);
             navigate("/dashboard");
+
             console.log(data);
         } catch (error) {
             alert("Login failed!");
@@ -47,7 +52,10 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <button type="submit" className="w-full bg-blue-500 text-white p-3 rounded-lg">
+                <button
+                    type="submit"
+                    className="w-full bg-blue-500 text-white p-3 rounded-lg"
+                >
                     Login
                 </button>
             </form>
