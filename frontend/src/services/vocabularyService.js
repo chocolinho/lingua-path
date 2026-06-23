@@ -28,3 +28,14 @@ export const updateVocabulary = async (id, vocabulary) => {
 export const deleteVocabulary = async (id) => {
     await axiosClient.delete(`/api/vocabularies/${id}`);
 };
+
+export const getVocabularyPage = async (page = 0, size = 10) => {
+    const response = await axiosClient.get("/api/vocabularies/page", {
+        params: {
+            page,
+            size,
+        },
+    });
+
+    return response.data;
+};

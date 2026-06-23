@@ -4,7 +4,7 @@ import { getTopics } from "../services/topicService";
 import {
     createVocabulary,
     deleteVocabulary,
-    getVocabularies,
+    getVocabularyPage,
     searchVocabularies,
     updateVocabulary,
 } from "../services/vocabularyService";
@@ -23,21 +23,28 @@ function Vocabularies() {
     const [searchKeyword, setSearchKeyword] = useState("");
     const [isSearching, setIsSearching] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [pageSize] = useState(5);
+
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    const fetchData = async () => {
+    const fetchData = async (page = 0) => {
         try {
             setLoading(true);
             setErrorMessage("");
 
-            const [vocabularyData, topicData] = await Promise.all([
-                getVocabularies(),
+            const [pageData, topicData] = await Promise.all([
+                getVocabularyPage(page, pageSize),
                 getTopics(),
             ]);
 
-            setVocabularies(vocabularyData);
+
+            setVocabularies(pageData.content || []);
+            setCurrentPage(pageData.number || 0);
+            setTotalPages(pageData.totalPages || 0);
             setTopics(topicData);
         } catch (error) {
             console.error(error);
@@ -50,7 +57,19 @@ function Vocabularies() {
     const handleClearSearch = () => {
         setSearchKeyword("");
         setIsSearching(false);
-        fetchData();
+        fetchData(0);
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 0) {
+            fetchData(currentPage - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages - 1) {
+            fetchData(currentPage + 1);
+        }
     };
 
     const handleSearch = async (e) => {
@@ -140,7 +159,7 @@ function Vocabularies() {
             if (isSearching) {
                 handleClearSearch();
             } else {
-                fetchData();
+                fetchData(currentPage);
             }
         } catch (error) {
             console.error(error);
@@ -174,7 +193,7 @@ function Vocabularies() {
             if (isSearching) {
                 handleClearSearch();
             } else {
-                fetchData();
+                fetchData(currentPage);
             }
         } catch (error) {
             console.error(error);
@@ -334,85 +353,115 @@ function Vocabularies() {
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[900px]">
-                            <thead className="bg-slate-50">
-                            <tr>
-                                <th className="text-left p-4 text-slate-500 text-sm">
-                                    Word
-                                </th>
+                    <>
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[900px]">
+                                <thead className="bg-slate-50">
+                                <tr>
+                                    <th className="text-left p-4 text-slate-500 text-sm">
+                                        Word
+                                    </th>
 
-                                <th className="text-left p-4 text-slate-500 text-sm">
-                                    Meaning
-                                </th>
+                                    <th className="text-left p-4 text-slate-500 text-sm">
+                                        Meaning
+                                    </th>
 
-                                <th className="text-left p-4 text-slate-500 text-sm">
-                                    Example
-                                </th>
+                                    <th className="text-left p-4 text-slate-500 text-sm">
+                                        Example
+                                    </th>
 
-                                <th className="text-left p-4 text-slate-500 text-sm">
-                                    Topic
-                                </th>
+                                    <th className="text-left p-4 text-slate-500 text-sm">
+                                        Topic
+                                    </th>
 
-                                <th className="text-right p-4 text-slate-500 text-sm">
-                                    Actions
-                                </th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            {vocabularies.map((vocabulary) => (
-                                <tr
-                                    key={vocabulary.id}
-                                    className="border-t border-slate-100"
-                                >
-                                    <td className="p-4 font-black text-slate-800">
-                                        {vocabulary.word}
-                                    </td>
-
-                                    <td className="p-4 text-slate-600">
-                                        {vocabulary.meaning}
-                                    </td>
-
-                                    <td className="p-4 text-slate-500">
-                                        {vocabulary.exampleSentence || "-"}
-                                    </td>
-
-                                    <td className="p-4">
-                                            <span className="bg-green-50 text-[#58CC02] px-3 py-1 rounded-full text-sm font-black">
-                                                {vocabulary.topicName ||
-                                                    "No topic"}
-                                            </span>
-                                    </td>
-
-                                    <td className="p-4">
-                                        <div className="flex justify-end gap-3">
-                                            <button
-                                                onClick={() =>
-                                                    handleEdit(vocabulary)
-                                                }
-                                                className="px-4 py-2 rounded-xl bg-blue-50 text-blue-500 font-black hover:bg-blue-100 transition-all"
-                                            >
-                                                Edit
-                                            </button>
-
-                                            <button
-                                                onClick={() =>
-                                                    handleDelete(
-                                                        vocabulary.id
-                                                    )
-                                                }
-                                                className="px-4 py-2 rounded-xl bg-red-50 text-red-500 font-black hover:bg-red-100 transition-all"
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
+                                    <th className="text-right p-4 text-slate-500 text-sm">
+                                        Actions
+                                    </th>
                                 </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+
+                                <tbody>
+                                {vocabularies.map((vocabulary) => (
+                                    <tr
+                                        key={vocabulary.id}
+                                        className="border-t border-slate-100"
+                                    >
+                                        <td className="p-4 font-black text-slate-800">
+                                            {vocabulary.word}
+                                        </td>
+
+                                        <td className="p-4 text-slate-600">
+                                            {vocabulary.meaning}
+                                        </td>
+
+                                        <td className="p-4 text-slate-500">
+                                            {vocabulary.exampleSentence || "-"}
+                                        </td>
+
+                                        <td className="p-4">
+                                                <span className="bg-green-50 text-[#58CC02] px-3 py-1 rounded-full text-sm font-black">
+                                                    {vocabulary.topicName ||
+                                                        "No topic"}
+                                                </span>
+                                        </td>
+
+                                        <td className="p-4">
+                                            <div className="flex justify-end gap-3">
+                                                <button
+                                                    onClick={() =>
+                                                        handleEdit(
+                                                            vocabulary
+                                                        )
+                                                    }
+                                                    className="px-4 py-2 rounded-xl bg-blue-50 text-blue-500 font-black hover:bg-blue-100 transition-all"
+                                                >
+                                                    Edit
+                                                </button>
+
+                                                <button
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            vocabulary.id
+                                                        )
+                                                    }
+                                                    className="px-4 py-2 rounded-xl bg-red-50 text-red-500 font-black hover:bg-red-100 transition-all"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {!isSearching && totalPages > 1 && (
+                            <div className="flex items-center justify-between p-5 border-t border-slate-100">
+                                <button
+                                    type="button"
+                                    onClick={handlePreviousPage}
+                                    disabled={currentPage === 0}
+                                    className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-600 font-black disabled:opacity-40"
+                                >
+                                    Previous
+                                </button>
+
+                                <p className="font-bold text-slate-500">
+                                    Page {currentPage + 1} of {totalPages}
+                                </p>
+
+                                <button
+                                    type="button"
+                                    onClick={handleNextPage}
+                                    disabled={currentPage >= totalPages - 1}
+                                    className="px-5 py-3 rounded-2xl bg-[#58CC02] text-white font-black disabled:opacity-40"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
