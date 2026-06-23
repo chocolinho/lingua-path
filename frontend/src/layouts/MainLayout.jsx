@@ -29,7 +29,7 @@ function MainLayout() {
                     </Link>
 
                     <Link to="/quiz" className="block hover:text-blue-300">
-                        Quiz
+                        Quiz Results
                     </Link>
 
                     <button

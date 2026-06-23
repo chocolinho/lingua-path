@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import Topics from "./pages/Topics";
 import Vocabularies from "./pages/Vocabularies";
+import QuizResults from "./pages/QuizResults";
 function App() {
     return (
         <BrowserRouter>
@@ -22,7 +23,7 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/topics" element={<Topics />} />
                     <Route path="/vocabularies" element={<Vocabularies />} />
-                    <Route path="/quiz" element={<div>Quiz Page</div>} />
+                    <Route path="/quiz" element={<QuizResults />} />
                 </Route>
             </Routes>
         </BrowserRouter>
