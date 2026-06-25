@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
     getTopics,
     getVocabularies,
-    getQuizResults,
+    getMyQuizResults,
 } from "../services/dashboardService";
 import { useAuth } from "../context/AuthContext";
 import StatCard from "../components/StatCard";
@@ -24,7 +24,9 @@ function Dashboard() {
         topics: 0,
         vocabularies: 0,
         quizResults: 0,
-        averageScore: 0,
+        averageScore: "0.0",
+        bestScore: "0.0",
+        xpPoints: 0,
     });
 
     const [loading, setLoading] = useState(true);
@@ -32,26 +34,45 @@ function Dashboard() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const [topics, vocabularies, quizResults] =
-                    await Promise.all([
-                        getTopics(),
-                        getVocabularies(),
-                        getQuizResults(),
-                    ]);
+                const [topics, vocabularies, quizResults] = await Promise.all([
+                    getTopics(),
+                    getVocabularies(),
+                    getMyQuizResults(),
+                ]);
+
+                const quizCount = quizResults.length;
 
                 const averageScore =
-                    quizResults.length > 0
+                    quizCount > 0
                         ? quizResults.reduce(
                         (sum, item) => sum + Number(item.score || 0),
                         0
-                    ) / quizResults.length
+                    ) / quizCount
                         : 0;
+
+                const bestScore =
+                    quizCount > 0
+                        ? Math.max(
+                            ...quizResults.map((item) =>
+                                Number(item.score || 0)
+                            )
+                        )
+                        : 0;
+
+                const xpPoints =
+                    vocabularies.length * 10 +
+                    quizResults.reduce(
+                        (sum, item) => sum + Number(item.correctAnswers || 0) * 5,
+                        0
+                    );
 
                 setStats({
                     topics: topics.length,
                     vocabularies: vocabularies.length,
-                    quizResults: quizResults.length,
+                    quizResults: quizCount,
                     averageScore: averageScore.toFixed(1),
+                    bestScore: bestScore.toFixed(1),
+                    xpPoints,
                 });
             } catch (error) {
                 console.error("Failed to load dashboard data", error);
@@ -137,9 +158,12 @@ function Dashboard() {
                         Keep your streak alive and unlock new achievements.
                     </p>
 
-                    <button className="mt-6 bg-white text-[#58CC02] px-8 py-4 rounded-2xl font-black shadow-md hover:scale-105 transition-all">
+                    <a
+                        href="/quiz"
+                        className="inline-block mt-6 bg-white text-[#58CC02] px-8 py-4 rounded-2xl font-black shadow-md hover:scale-105 transition-all"
+                    >
                         Continue Learning
-                    </button>
+                    </a>
                 </div>
 
                 <div className="absolute right-6 bottom-0 text-8xl md:text-9xl opacity-90">
@@ -149,17 +173,9 @@ function Dashboard() {
 
             <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
                 <StatCard
-                    icon="🔥"
-                    title="Daily Streak"
-                    value="3"
-                    subtitle="days in a row"
-                    color="bg-orange-100"
-                />
-
-                <StatCard
                     icon="⭐"
                     title="XP Points"
-                    value={stats.vocabularies * 10}
+                    value={stats.xpPoints}
                     subtitle="total experience"
                     color="bg-yellow-100"
                 />
@@ -179,6 +195,14 @@ function Dashboard() {
                     subtitle="vocabulary learned"
                     color="bg-purple-100"
                 />
+
+                <StatCard
+                    icon="📝"
+                    title="Quiz Attempts"
+                    value={stats.quizResults}
+                    subtitle="completed quizzes"
+                    color="bg-green-100"
+                />
             </section>
 
             <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -196,16 +220,37 @@ function Dashboard() {
                     </h3>
 
                     <p className="text-slate-500 text-sm mb-4">
-                        Average score from your quiz results
+                        Your average and best quiz score
                     </p>
 
-                    <div className="flex items-end gap-2">
-                        <span className="text-5xl font-black text-[#58CC02]">
-                            {stats.averageScore}
-                        </span>
-                        <span className="text-slate-400 font-bold mb-2">
-                            points
-                        </span>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <p className="text-sm font-bold text-slate-400">
+                                Average
+                            </p>
+                            <div className="flex items-end gap-1">
+                                <span className="text-4xl font-black text-[#58CC02]">
+                                    {stats.averageScore}
+                                </span>
+                                <span className="text-slate-400 font-bold mb-1">
+                                    %
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-bold text-slate-400">
+                                Best
+                            </p>
+                            <div className="flex items-end gap-1">
+                                <span className="text-4xl font-black text-[#1CB0F6]">
+                                    {stats.bestScore}
+                                </span>
+                                <span className="text-slate-400 font-bold mb-1">
+                                    %
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -250,14 +295,14 @@ function Dashboard() {
                     <BadgeCard
                         icon="🔥"
                         title="Streak Starter"
-                        description="Learn 3 days in a row"
+                        description="Complete your first weekly learning goal"
                         color="bg-orange-100"
                     />
 
                     <BadgeCard
                         icon="📚"
                         title="Word Collector"
-                        description="Learn your first vocabulary list"
+                        description="Build your vocabulary collection"
                         color="bg-blue-100"
                     />
 

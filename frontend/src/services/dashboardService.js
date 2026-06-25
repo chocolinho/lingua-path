@@ -10,7 +10,7 @@ export const getVocabularies = async () => {
     return response.data;
 };
 
-export const getQuizResults = async () => {
-    const response = await axiosClient.get("/api/quizzes/results");
+export const getMyQuizResults = async () => {
+    const response = await axiosClient.get("/api/quizzes/my-results");
     return response.data;
 };

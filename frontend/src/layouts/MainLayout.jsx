@@ -75,6 +75,10 @@ function MainLayout() {
                                 Quiz
                             </NavLink>
 
+                            <NavLink to="/quiz-results" className={navLinkClass}>
+                                <Trophy className="w-5 h-5" />
+                                My Results
+                            </NavLink>
                             <div className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400 font-bold cursor-not-allowed">
                                 <Trophy className="w-5 h-5" />
                                 Achievements
