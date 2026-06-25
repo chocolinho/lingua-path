@@ -39,3 +39,8 @@ export const getVocabularyPage = async (page = 0, size = 10) => {
 
     return response.data;
 };
+
+export const getVocabulariesByTopic = async (topicId) => {
+    const response = await axiosClient.get(`/api/vocabularies/topic/${topicId}`);
+    return response.data;
+};
