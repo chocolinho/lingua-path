@@ -7,7 +7,7 @@ function LearnTopic() {
 
     const [vocabularies, setVocabularies] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [showMeaning, setShowMeaning] = useState(false);
+    const [isFlipped, setIsFlipped] = useState(false);
     const [loading, setLoading] = useState(true);
     const [completed, setCompleted] = useState(false);
 
@@ -40,13 +40,13 @@ function LearnTopic() {
         }
 
         setCurrentIndex((prev) => prev + 1);
-        setShowMeaning(false);
+        setIsFlipped(false);
     };
 
     const handlePrevious = () => {
         if (currentIndex > 0) {
             setCurrentIndex((prev) => prev - 1);
-            setShowMeaning(false);
+            setIsFlipped(false);
         }
     };
 
@@ -130,44 +130,69 @@ function LearnTopic() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 text-center">
-                <p className="text-sm font-black text-slate-400 mb-4">
-                    Flashcard Learning
-                </p>
-
-                <h1 className="text-6xl font-black text-slate-800 mb-6">
-                    {currentVocabulary.word}
-                </h1>
-
-                <button
-                    type="button"
-                    onClick={handleSpeak}
-                    className="bg-blue-50 text-[#1CB0F6] px-5 py-3 rounded-2xl font-black mb-6"
+            <div
+                className="relative h-[380px] cursor-pointer"
+                onClick={() => setIsFlipped((prev) => !prev)}
+                style={{ perspective: "1000px" }}
+            >
+                <div
+                    className="relative w-full h-full transition-transform duration-500"
+                    style={{
+                        transformStyle: "preserve-3d",
+                        transform: isFlipped
+                            ? "rotateY(180deg)"
+                            : "rotateY(0deg)",
+                    }}
                 >
-                    🔊 Pronounce
-                </button>
-
-                {!showMeaning ? (
-                    <button
-                        type="button"
-                        onClick={() => setShowMeaning(true)}
-                        className="block mx-auto bg-[#58CC02] text-white px-8 py-4 rounded-2xl font-black"
+                    <div
+                        className="absolute inset-0 bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
+                        style={{ backfaceVisibility: "hidden" }}
                     >
-                        Show Meaning
-                    </button>
-                ) : (
-                    <div className="bg-green-50 rounded-3xl p-6 mt-4">
-                        <p className="text-slate-400 font-bold">Meaning</p>
+                        <p className="text-sm font-black text-slate-400 mb-4">
+                            Tap to flip
+                        </p>
 
-                        <h2 className="text-3xl font-black text-[#58CC02] mt-2">
+                        <h1 className="text-6xl font-black text-slate-800 mb-6">
+                            {currentVocabulary.word}
+                        </h1>
+
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleSpeak();
+                            }}
+                            className="bg-blue-50 text-[#1CB0F6] px-5 py-3 rounded-2xl font-black"
+                        >
+                            🔊 Pronounce
+                        </button>
+                    </div>
+
+                    <div
+                        className="absolute inset-0 bg-green-50 rounded-[2rem] p-8 shadow-sm border border-green-100 flex flex-col items-center justify-center text-center"
+                        style={{
+                            backfaceVisibility: "hidden",
+                            transform: "rotateY(180deg)",
+                        }}
+                    >
+                        <p className="text-sm font-black text-green-500 mb-4">
+                            Meaning
+                        </p>
+
+                        <h2 className="text-4xl font-black text-[#58CC02] mb-5">
                             {currentVocabulary.meaning}
                         </h2>
 
-                        <p className="text-slate-500 mt-4 font-semibold">
-                            {currentVocabulary.exampleSentence || "No example sentence."}
+                        <p className="text-slate-600 font-semibold max-w-xl">
+                            {currentVocabulary.exampleSentence ||
+                                "No example sentence."}
+                        </p>
+
+                        <p className="text-xs text-slate-400 font-bold mt-6">
+                            Tap again to see the word
                         </p>
                     </div>
-                )}
+                </div>
             </div>
 
             <div className="flex justify-between mt-6">
