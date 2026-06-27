@@ -1,6 +1,6 @@
 package com.lulu.englishlearningapp.controller;
 
-import com.lulu.englishlearningapp.entity.Vocabulary;
+
 import jakarta.validation.Valid;
 import com.lulu.englishlearningapp.service.VocabularyService;
 import lombok.RequiredArgsConstructor;
