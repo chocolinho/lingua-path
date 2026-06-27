@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
     BookOpen,
@@ -13,24 +13,16 @@ import { login } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
-    const [email, setEmail] = useState("");
+    const rememberedEmail = localStorage.getItem("rememberedEmail") || "";
+    const [email, setEmail] = useState(rememberedEmail);
     const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
+    const [rememberMe, setRememberMe] = useState(Boolean(rememberedEmail));
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
     const { loginSuccess } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const rememberedEmail = localStorage.getItem("rememberedEmail");
-
-        if (rememberedEmail) {
-            setEmail(rememberedEmail);
-            setRememberMe(true);
-        }
-    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();

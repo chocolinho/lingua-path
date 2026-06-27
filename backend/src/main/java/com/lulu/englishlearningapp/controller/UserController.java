@@ -20,11 +20,7 @@ public class UserController {
 
         User user = (User) authentication.getPrincipal();
 
-        return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build();
+        return userService.getCurrentUserResponse(user);
     }
 
     @PutMapping("/change-password")

@@ -10,8 +10,12 @@ import lombok.Setter;
 public class UserResponse {
 
     private Long id;
-
     private String username;
-
     private String email;
+
+    private Integer xp;
+    private int level;
+    private int currentLevelXp;
+    private int nextLevelXp;
+    private int levelProgress;
 }

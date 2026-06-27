@@ -7,7 +7,6 @@ import com.lulu.englishlearningapp.entity.QuizResult;
 import com.lulu.englishlearningapp.entity.User;
 import com.lulu.englishlearningapp.entity.Vocabulary;
 import com.lulu.englishlearningapp.repository.QuizResultRepository;
-import com.lulu.englishlearningapp.repository.UserRepository;
 import com.lulu.englishlearningapp.repository.VocabularyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class QuizService {
 
     private final QuizResultRepository quizResultRepository;
     private final VocabularyRepository vocabularyRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public QuizSubmitResponse submitQuiz(
             QuizSubmitRequest request,
@@ -52,19 +51,24 @@ public class QuizService {
 
         int earnedXp = correctAnswers * 10;
 
-        if (user.getXp() == null) {
-            user.setXp(0);
-        }
+        User updatedUser = userService.addXp(user, earnedXp);
 
-        user.setXp(user.getXp() + earnedXp);
-        User updatedUser = userRepository.save(user);
+        int totalXp = updatedUser.getXp() == null ? 0 : updatedUser.getXp();
+        int level = userService.calculateLevel(totalXp);
+        int currentLevelXp = userService.getCurrentLevelXp(level);
+        int nextLevelXp = userService.getNextLevelXp(level);
+        int levelProgress = userService.calculateLevelProgress(totalXp);
 
         return QuizSubmitResponse.builder()
                 .totalQuestions(totalQuestions)
                 .correctAnswers(correctAnswers)
                 .score(score)
                 .earnedXp(earnedXp)
-                .totalXp(updatedUser.getXp())
+                .totalXp(totalXp)
+                .level(level)
+                .currentLevelXp(currentLevelXp)
+                .nextLevelXp(nextLevelXp)
+                .levelProgress(levelProgress)
                 .build();
     }
 

@@ -5,7 +5,6 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Topics from "./pages/Topics";
 import Vocabularies from "./pages/Vocabularies";
-import QuizResults from "./pages/QuizResults";
 import Learn from "./pages/Learn";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";

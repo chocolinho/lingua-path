@@ -1,10 +1,6 @@
 package com.lulu.englishlearningapp.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -19,4 +15,9 @@ public class QuizSubmitResponse {
 
     private int earnedXp;
     private int totalXp;
+
+    private int level;
+    private int currentLevelXp;
+    private int nextLevelXp;
+    private int levelProgress;
 }
