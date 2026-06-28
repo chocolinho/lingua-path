@@ -1,7 +1,10 @@
 package com.lulu.englishlearningapp.service;
 
+import com.lulu.englishlearningapp.dto.TopicRequest;
+import com.lulu.englishlearningapp.dto.TopicResponse;
 import com.lulu.englishlearningapp.entity.Topic;
 import com.lulu.englishlearningapp.repository.TopicRepository;
+import com.lulu.englishlearningapp.repository.VocabularyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,30 +15,52 @@ import java.util.List;
 public class TopicService {
 
     private final TopicRepository topicRepository;
+    private final VocabularyRepository vocabularyRepository;
 
-    public List<Topic> getAllTopics() {
-        return topicRepository.findAll();
+    public List<TopicResponse> getAllTopics() {
+        return topicRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
-    public Topic createTopic(Topic topic) {
-        return topicRepository.save(topic);
+    public TopicResponse createTopic(TopicRequest request) {
+        Topic topic = Topic.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .build();
+
+        return mapToResponse(topicRepository.save(topic));
     }
 
-    public Topic getTopicById(Long id) {
+    public TopicResponse getTopicById(Long id) {
+        return mapToResponse(findTopicById(id));
+    }
+
+    public Topic findTopicById(Long id) {
         return topicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Topic not found"));
     }
 
-    public Topic updateTopic(Long id, Topic topic) {
-        Topic existingTopic = getTopicById(id);
+    public TopicResponse updateTopic(Long id, TopicRequest request) {
+        Topic existingTopic = findTopicById(id);
 
-        existingTopic.setName(topic.getName());
-        existingTopic.setDescription(topic.getDescription());
+        existingTopic.setName(request.getName());
+        existingTopic.setDescription(request.getDescription());
 
-        return topicRepository.save(existingTopic);
+        return mapToResponse(topicRepository.save(existingTopic));
     }
 
     public void deleteTopic(Long id) {
         topicRepository.deleteById(id);
+    }
+
+    private TopicResponse mapToResponse(Topic topic) {
+        return TopicResponse.builder()
+                .id(topic.getId())
+                .name(topic.getName())
+                .description(topic.getDescription())
+                .vocabularyCount(vocabularyRepository.countByTopicId(topic.getId()))
+                .build();
     }
 }

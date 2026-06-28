@@ -1,12 +1,15 @@
 package com.lulu.englishlearningapp.service;
 
 import com.lulu.englishlearningapp.dto.ChangePasswordRequest;
+import com.lulu.englishlearningapp.dto.UpdateProfileRequest;
 import com.lulu.englishlearningapp.dto.UserResponse;
 import com.lulu.englishlearningapp.entity.User;
 import com.lulu.englishlearningapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class UserService {
                 .currentLevelXp(getCurrentLevelXp(level))
                 .nextLevelXp(getNextLevelXp(level))
                 .levelProgress(calculateLevelProgress(totalXp))
+                .dailyStreak(user.getDailyStreak() == null ? 0 : user.getDailyStreak())
                 .build();
     }
 
@@ -44,6 +48,11 @@ public class UserService {
         return "Password changed successfully";
     }
 
+    public UserResponse updateProfile(User user, UpdateProfileRequest request) {
+        user.setUsername(request.getUsername().trim());
+        return getCurrentUserResponse(userRepository.save(user));
+    }
+
     public User addXp(User user, int xpAmount) {
         if (xpAmount <= 0) {
             return user;
@@ -54,6 +63,26 @@ public class UserService {
         }
 
         user.setXp(user.getXp() + xpAmount);
+        return userRepository.save(user);
+    }
+
+    public User recordDailyLearning(User user) {
+        LocalDate today = LocalDate.now();
+        LocalDate lastLearningDate = user.getLastLearningDate();
+
+        if (today.equals(lastLearningDate)) {
+            return user;
+        }
+
+        int currentStreak = user.getDailyStreak() == null ? 0 : user.getDailyStreak();
+
+        if (lastLearningDate != null && lastLearningDate.plusDays(1).equals(today)) {
+            user.setDailyStreak(currentStreak + 1);
+        } else {
+            user.setDailyStreak(1);
+        }
+
+        user.setLastLearningDate(today);
         return userRepository.save(user);
     }
 

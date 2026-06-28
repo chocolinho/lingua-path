@@ -1,7 +1,9 @@
 package com.lulu.englishlearningapp.controller;
 
-import com.lulu.englishlearningapp.entity.Topic;
+import com.lulu.englishlearningapp.dto.TopicRequest;
+import com.lulu.englishlearningapp.dto.TopicResponse;
 import com.lulu.englishlearningapp.service.TopicService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,23 +17,23 @@ public class TopicController {
     private final TopicService topicService;
 
     @GetMapping
-    public List<Topic> getAllTopics() {
+    public List<TopicResponse> getAllTopics() {
         return topicService.getAllTopics();
     }
 
     @PostMapping
-    public Topic createTopic(@RequestBody Topic topic) {
-        return topicService.createTopic(topic);
+    public TopicResponse createTopic(@Valid @RequestBody TopicRequest request) {
+        return topicService.createTopic(request);
     }
 
     @GetMapping("/{id}")
-    public Topic getTopicById(@PathVariable Long id) {
+    public TopicResponse getTopicById(@PathVariable Long id) {
         return topicService.getTopicById(id);
     }
 
     @PutMapping("/{id}")
-    public Topic updateTopic(@PathVariable Long id, @RequestBody Topic topic) {
-        return topicService.updateTopic(id, topic);
+    public TopicResponse updateTopic(@PathVariable Long id, @Valid @RequestBody TopicRequest request) {
+        return topicService.updateTopic(id, request);
     }
 
     @DeleteMapping("/{id}")

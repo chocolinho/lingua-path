@@ -11,6 +11,8 @@ public interface VocabularyRepository
 
     List<Vocabulary> findByTopicId(Long topicId);
 
+    long countByTopicId(Long topicId);
+
     List<Vocabulary> findByWordContainingIgnoreCase(String keyword);
 
     Page<Vocabulary> findByWordContainingIgnoreCaseOrMeaningContainingIgnoreCase(

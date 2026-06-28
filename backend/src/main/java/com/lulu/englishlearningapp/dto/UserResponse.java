@@ -18,4 +18,6 @@ public class UserResponse {
     private int currentLevelXp;
     private int nextLevelXp;
     private int levelProgress;
+
+    private int dailyStreak;
 }

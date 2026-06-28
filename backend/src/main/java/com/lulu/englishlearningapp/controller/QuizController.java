@@ -2,10 +2,12 @@ package com.lulu.englishlearningapp.controller;
 
 import com.lulu.englishlearningapp.dto.QuizSubmitRequest;
 import com.lulu.englishlearningapp.dto.QuizSubmitResponse;
-import com.lulu.englishlearningapp.entity.QuizResult;
+import com.lulu.englishlearningapp.dto.QuizResultResponse;
+import com.lulu.englishlearningapp.dto.VocabularyResponse;
 import com.lulu.englishlearningapp.entity.User;
 import com.lulu.englishlearningapp.repository.UserRepository;
 import com.lulu.englishlearningapp.service.QuizService;
+import com.lulu.englishlearningapp.service.VocabularyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ public class QuizController {
 
     private final QuizService quizService;
     private final UserRepository userRepository;
+    private final VocabularyService vocabularyService;
 
     @PostMapping("/submit")
     public QuizSubmitResponse submitQuiz(
@@ -30,14 +33,19 @@ public class QuizController {
     }
 
     @GetMapping("/results")
-    public List<QuizResult> getQuizResults() {
+    public List<QuizResultResponse> getQuizResults() {
         return quizService.getQuizResults();
     }
 
     @GetMapping("/my-results")
-    public List<QuizResult> getMyQuizResults(Authentication authentication) {
+    public List<QuizResultResponse> getMyQuizResults(Authentication authentication) {
         User user = getCurrentUser(authentication);
         return quizService.getMyQuizResults(user);
+    }
+
+    @GetMapping("/topic/{topicId}/questions")
+    public List<VocabularyResponse> getQuizQuestionsByTopic(@PathVariable Long topicId) {
+        return vocabularyService.getVocabulariesByTopicId(topicId);
     }
 
     private User getCurrentUser(Authentication authentication) {

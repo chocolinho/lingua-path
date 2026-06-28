@@ -9,5 +9,7 @@ import java.util.List;
 @Setter
 public class QuizSubmitRequest {
 
+    private Long topicId;
+
     private List<QuizAnswerRequest> answers;
 }

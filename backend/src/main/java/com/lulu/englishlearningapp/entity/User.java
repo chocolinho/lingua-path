@@ -3,6 +3,8 @@ package com.lulu.englishlearningapp.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -24,4 +26,9 @@ public class User {
 
     @Builder.Default
     private Integer xp = 0;
+
+    @Builder.Default
+    private Integer dailyStreak = 0;
+
+    private LocalDate lastLearningDate;
 }
