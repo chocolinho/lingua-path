@@ -5,6 +5,7 @@ import com.lulu.englishlearningapp.dto.UpdateProfileRequest;
 import com.lulu.englishlearningapp.dto.UserResponse;
 import com.lulu.englishlearningapp.entity.User;
 import com.lulu.englishlearningapp.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class UserController {
     @PutMapping("/me")
     public UserResponse updateCurrentUser(
             Authentication authentication,
-            @RequestBody UpdateProfileRequest request) {
+            @Valid @RequestBody UpdateProfileRequest request) {
 
         return userService.updateProfile(currentUser(authentication), request);
     }
@@ -32,7 +33,7 @@ public class UserController {
     @PutMapping("/change-password")
     public String changePassword(
             Authentication authentication,
-            @RequestBody ChangePasswordRequest request) {
+            @Valid @RequestBody ChangePasswordRequest request) {
 
         return userService.changePassword(currentUser(authentication), request);
     }

@@ -123,7 +123,7 @@ function Dashboard() {
     }
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
+        <div className="app-page space-y-6">
             {errorMessage && (
                 <div className="rounded-2xl bg-red-50 p-4 font-semibold text-red-500 dark:bg-red-950/40">
                     {errorMessage}
@@ -131,27 +131,27 @@ function Dashboard() {
             )}
 
             <section className="grid gap-5 xl:grid-cols-[1fr_360px]">
-                <div className="overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#58CC02] via-[#1CB0F6] to-[#CE82FF] p-6 text-white shadow-xl shadow-sky-100 dark:shadow-none md:p-7">
+                <div className="kid-panel-soft overflow-hidden p-6 md:p-7">
                     <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                         <div>
-                            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold text-white">
+                            <div className="kid-pill mb-4">
                                 <Flame className="h-4 w-4" />
                                 {stats.dailyStreak} day streak
                             </div>
-                            <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-white md:text-4xl">
+                            <h1 className="max-w-2xl text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-4xl">
                                 Welcome back, {displayName}
                             </h1>
-                            <p className="mt-3 max-w-2xl text-base font-medium leading-7 text-white/90">
+                            <p className="mt-3 max-w-2xl text-base font-semibold leading-7 text-slate-600 dark:text-slate-300">
                                 Keep the session focused: review a topic, take a quiz,
                                 or check your ranking progress.
                             </p>
                         </div>
 
                         <div
-                            className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold ${
+                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-black ${
                                 isPremium
-                                    ? "bg-yellow-300 text-slate-950"
-                                    : "bg-white/20 text-white"
+                                    ? "border-yellow-200 bg-yellow-100 text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200"
+                                    : "border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
                             }`}
                         >
                             <Crown className="h-4 w-4" />
@@ -181,7 +181,7 @@ function Dashboard() {
                     </div>
                 </div>
 
-                <div className="rounded-[1.75rem] border border-green-100 bg-white p-6 shadow-lg shadow-green-100 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
+                <div className="kid-panel p-6">
                     <div className="flex items-start justify-between gap-4">
                         <div>
                             <p className="text-sm font-bold text-slate-400">
@@ -402,13 +402,13 @@ function ActionLink({ to, icon, title, description }) {
     return (
         <Link
             to={to}
-            className="group rounded-2xl border border-white/20 bg-white/20 p-4 text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-white/30 focus:outline-none focus:ring-4 focus:ring-white/40"
+            className="group rounded-2xl border-2 border-white bg-white p-4 text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-green-200 hover:bg-green-50 focus:outline-none focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-green-950/30 dark:focus:ring-green-900"
         >
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#58CC02]">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-green-100 text-[#58CC02] dark:bg-green-950">
                 {icon}
             </div>
-            <p className="font-bold text-white">{title}</p>
-            <p className="mt-1 text-sm font-medium text-white/80">
+            <p className="font-black text-slate-950 dark:text-white">{title}</p>
+            <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">
                 {description}
             </p>
         </Link>

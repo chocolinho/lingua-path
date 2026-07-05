@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Learning Platform - System Architecture</title>
+    <style>
+        :root {
+            --green: #58cc02;
+            --blue: #1cb0f6;
+            --purple: #ce82ff;
+            --yellow: #ffc800;
+            --orange: #ff8a1c;
+            --ink: #17324d;
+            --muted: #5d7186;
+            --line: #cdd9e5;
+            --bg: #f6f8fb;
+            --card: #ffffff;
+            --soft-green: #eefbe8;
+            --soft-blue: #eaf7ff;
+            --soft-purple: #f7edff;
+            --soft-yellow: #fff8d8;
+            --soft-orange: #fff1e4;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .poster {
+            width: 1600px;
+            min-height: 1020px;
+            margin: 0 auto;
+            padding: 28px 30px;
+            background:
+                radial-gradient(circle at 8% 8%, rgba(88, 204, 2, 0.08), transparent 22%),
+                radial-gradient(circle at 94% 10%, rgba(28, 176, 246, 0.09), transparent 24%),
+                linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .title {
+            margin: 0;
+            color: #12345a;
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 270px 1fr 270px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .lane {
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.76);
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(23, 50, 77, 0.08);
+        }
+
+        .lane.user {
+            border-color: rgba(28, 176, 246, 0.5);
+        }
+
+        .lane.admin {
+            border-color: rgba(88, 204, 2, 0.55);
+        }
+
+        .lane-title {
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 900;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .user .lane-title,
+        .section.home .section-title,
+        .db .section-title {
+            background: var(--blue);
+        }
+
+        .admin .lane-title {
+            background: var(--green);
+        }
+
+        .steps {
+            position: relative;
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+        }
+
+        .steps::before {
+            content: "";
+            position: absolute;
+            top: 30px;
+            bottom: 30px;
+            left: 50%;
+            width: 2px;
+            background: rgba(93, 113, 134, 0.22);
+            transform: translateX(-50%);
+        }
+
+        .step {
+            position: relative;
+            display: grid;
+            grid-template-columns: 42px 1fr;
+            gap: 10px;
+            align-items: center;
+            min-height: 72px;
+            padding: 10px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 6px 14px rgba(23, 50, 77, 0.06);
+            z-index: 1;
+        }
+
+        .icon {
+            display: inline-grid;
+            width: 40px;
+            height: 40px;
+            place-items: center;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 15px;
+        }
+
+        .blue {
+            background: var(--blue);
+        }
+
+        .green {
+            background: var(--green);
+        }
+
+        .purple {
+            background: var(--purple);
+        }
+
+        .yellow {
+            background: var(--yellow);
+            color: #6f5200;
+        }
+
+        .orange {
+            background: var(--orange);
+        }
+
+        .step strong {
+            display: block;
+            font-size: 13px;
+            line-height: 1.25;
+        }
+
+        .step span {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.25;
+        }
+
+        .center {
+            display: grid;
+            gap: 16px;
+        }
+
+        .section {
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: 0 12px 30px rgba(23, 50, 77, 0.08);
+            overflow: hidden;
+        }
+
+        .section-title {
+            width: fit-content;
+            min-width: 210px;
+            margin: 0 auto;
+            padding: 8px 18px;
+            border-radius: 0 0 6px 6px;
+            color: #ffffff;
+            font-weight: 900;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .section.learning {
+            border-color: rgba(206, 130, 255, 0.58);
+        }
+
+        .section.learning .section-title {
+            background: var(--purple);
+        }
+
+        .section.admin-panel {
+            border-color: rgba(88, 204, 2, 0.52);
+        }
+
+        .section.admin-panel .section-title {
+            background: var(--green);
+        }
+
+        .section.backend {
+            border-color: rgba(255, 138, 28, 0.55);
+        }
+
+        .section.backend .section-title {
+            background: var(--orange);
+        }
+
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+            padding: 20px 16px 16px;
+        }
+
+        .module {
+            min-height: 100px;
+            padding: 12px 8px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--card);
+            text-align: center;
+            box-shadow: 0 7px 18px rgba(23, 50, 77, 0.06);
+        }
+
+        .module .icon {
+            margin: 0 auto 8px;
+        }
+
+        .module strong {
+            display: block;
+            font-size: 12px;
+            line-height: 1.25;
+        }
+
+        .module span {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.25;
+        }
+
+        .db {
+            border-color: rgba(28, 176, 246, 0.45);
+        }
+
+        .tables {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 10px;
+            padding: 18px 12px;
+        }
+
+        .table {
+            min-height: 122px;
+            border: 1px solid #aebfd0;
+            border-radius: 7px;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .table h4 {
+            margin: 0;
+            padding: 7px 6px;
+            background: var(--soft-blue);
+            color: #12345a;
+            font-size: 12px;
+            text-align: center;
+            border-bottom: 1px solid #aebfd0;
+        }
+
+        .table p {
+            margin: 0;
+            padding: 8px 9px;
+            color: #283f56;
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+        .bottom {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr 180px;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .flow,
+        .stack,
+        .legend {
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.84);
+            padding: 16px;
+            box-shadow: 0 12px 30px rgba(23, 50, 77, 0.08);
+        }
+
+        .box-title {
+            margin: 0 0 12px;
+            color: #12345a;
+            font-size: 14px;
+            font-weight: 900;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .flow-row,
+        .stack-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .flow-item,
+        .stack-item {
+            display: grid;
+            gap: 5px;
+            justify-items: center;
+            min-width: 74px;
+            color: var(--ink);
+            font-size: 10px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .arrow {
+            color: #6c7f93;
+            font-weight: 900;
+        }
+
+        .legend {
+            align-self: stretch;
+        }
+
+        .legend-item {
+            display: grid;
+            grid-template-columns: 18px 1fr;
+            gap: 8px;
+            align-items: center;
+            margin: 9px 0;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .line {
+            height: 3px;
+            border-radius: 999px;
+        }
+
+        .line.blue {
+            background: var(--blue);
+        }
+
+        .line.green {
+            background: var(--green);
+        }
+
+        .line.purple {
+            background: var(--purple);
+        }
+
+        .line.orange {
+            background: var(--orange);
+        }
+
+        .print-note {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+            }
+
+            .poster {
+                width: 100%;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="poster" aria-label="English Learning Platform system architecture diagram">
+        <header class="header">
+            <h1 class="title">System Architecture - English Learning Platform</h1>
+            <p class="subtitle">Duolingo/Lingokids-inspired learning platform using Spring Boot, React, JWT and MySQL</p>
+        </header>
+
+        <section class="grid">
+            <aside class="lane user">
+                <div class="lane-title">Student / User Flow</div>
+                <div class="steps">
+                    <div class="step"><div class="icon blue">01</div><div><strong>Register / Login</strong><span>JWT authentication, protected routes</span></div></div>
+                    <div class="step"><div class="icon blue">02</div><div><strong>Dashboard</strong><span>XP, level, streak, achievements</span></div></div>
+                    <div class="step"><div class="icon purple">03</div><div><strong>Learn Topics</strong><span>Free, public and premium topic access</span></div></div>
+                    <div class="step"><div class="icon purple">04</div><div><strong>Flashcards</strong><span>Vocabulary by topic, pronunciation</span></div></div>
+                    <div class="step"><div class="icon yellow">05</div><div><strong>Quiz Practice</strong><span>Quiz by topic, 5/10/20/30 questions</span></div></div>
+                    <div class="step"><div class="icon green">06</div><div><strong>Progress</strong><span>Wrong answers, favorites, ranking</span></div></div>
+                    <div class="step"><div class="icon orange">07</div><div><strong>Premium</strong><span>Upgrade plan and payment history</span></div></div>
+                </div>
+            </aside>
+
+            <div class="center">
+                <section class="section home">
+                    <div class="section-title">Public / Home Area</div>
+                    <div class="modules">
+                        <div class="module"><div class="icon blue">LP</div><strong>Landing Page</strong><span>Friendly product intro</span></div>
+                        <div class="module"><div class="icon green">IN</div><strong>Login</strong><span>JWT token login</span></div>
+                        <div class="module"><div class="icon green">UP</div><strong>Register</strong><span>Default USER role</span></div>
+                        <div class="module"><div class="icon yellow">UI</div><strong>Kid-Friendly UI</strong><span>Light theme, English default</span></div>
+                        <div class="module"><div class="icon purple">RT</div><strong>Routing</strong><span>React Router</span></div>
+                        <div class="module"><div class="icon blue">AX</div><strong>Axios Client</strong><span>JWT interceptor</span></div>
+                        <div class="module"><div class="icon orange">403</div><strong>Locked State</strong><span>Premium gates</span></div>
+                        <div class="module"><div class="icon green">A11Y</div><strong>Accessibility</strong><span>Labels and focus states</span></div>
+                    </div>
+                </section>
+
+                <section class="section learning">
+                    <div class="section-title">Learning Experience</div>
+                    <div class="modules">
+                        <div class="module"><div class="icon blue">DB</div><strong>Dashboard</strong><span>Stats, XP, level</span></div>
+                        <div class="module"><div class="icon purple">LN</div><strong>Learn</strong><span>Topic cards</span></div>
+                        <div class="module"><div class="icon purple">FC</div><strong>Flashcards</strong><span>Flip card learning</span></div>
+                        <div class="module"><div class="icon yellow">QZ</div><strong>Quiz Practice</strong><span>Submit results</span></div>
+                        <div class="module"><div class="icon green">XP</div><strong>Level System</strong><span>Progress rewards</span></div>
+                        <div class="module"><div class="icon green">AC</div><strong>Achievements</strong><span>Learning badges</span></div>
+                        <div class="module"><div class="icon orange">RW</div><strong>Review Wrong</strong><span>Practice mistakes</span></div>
+                        <div class="module"><div class="icon yellow">FV</div><strong>Favorites</strong><span>Saved vocabulary</span></div>
+                    </div>
+                </section>
+
+                <section class="section admin-panel">
+                    <div class="section-title">Admin Area</div>
+                    <div class="modules">
+                        <div class="module"><div class="icon green">AD</div><strong>Admin Dashboard</strong><span>Platform metrics</span></div>
+                        <div class="module"><div class="icon blue">US</div><strong>User Stats</strong><span>Free, premium, admin</span></div>
+                        <div class="module"><div class="icon purple">TP</div><strong>Topic Management</strong><span>Public, premium, pending</span></div>
+                        <div class="module"><div class="icon yellow">VC</div><strong>Vocabulary</strong><span>Learning content</span></div>
+                        <div class="module"><div class="icon orange">PM</div><strong>Payments</strong><span>Recent transactions</span></div>
+                        <div class="module"><div class="icon blue">AN</div><strong>Analytics</strong><span>Learning reports</span></div>
+                        <div class="module"><div class="icon green">RB</div><strong>RBAC</strong><span>ADMIN only routes</span></div>
+                        <div class="module"><div class="icon purple">QA</div><strong>Moderation</strong><span>Approve learning topics</span></div>
+                    </div>
+                </section>
+
+                <section class="section backend">
+                    <div class="section-title">Spring Boot Backend</div>
+                    <div class="modules">
+                        <div class="module"><div class="icon orange">JWT</div><strong>Authentication</strong><span>Token security</span></div>
+                        <div class="module"><div class="icon green">RL</div><strong>Authorization</strong><span>USER / ADMIN</span></div>
+                        <div class="module"><div class="icon blue">API</div><strong>REST API</strong><span>Controller layer</span></div>
+                        <div class="module"><div class="icon purple">SV</div><strong>Services</strong><span>Business logic</span></div>
+                        <div class="module"><div class="icon yellow">DTO</div><strong>DTO</strong><span>Safe responses</span></div>
+                        <div class="module"><div class="icon green">PR</div><strong>Premium Gates</strong><span>Subscription checks</span></div>
+                        <div class="module"><div class="icon blue">RP</div><strong>Repositories</strong><span>Spring Data JPA</span></div>
+                        <div class="module"><div class="icon orange">EX</div><strong>Exceptions</strong><span>403 and API errors</span></div>
+                    </div>
+                </section>
+
+                <section class="section db">
+                    <div class="section-title">Database - MySQL</div>
+                    <div class="tables">
+                        <div class="table"><h4>users</h4><p>id<br>username<br>email<br>password<br>role<br>xp<br>subscription</p></div>
+                        <div class="table"><h4>topics</h4><p>id<br>title<br>description<br>visibility<br>accessType<br>approvalStatus</p></div>
+                        <div class="table"><h4>vocabularies</h4><p>id<br>word<br>meaning<br>example<br>topic_id</p></div>
+                        <div class="table"><h4>quiz_results</h4><p>id<br>user_id<br>topic_id<br>score<br>earnedXp<br>createdAt</p></div>
+                        <div class="table"><h4>wrong_answers</h4><p>id<br>user_id<br>vocabulary_id<br>question<br>answer</p></div>
+                        <div class="table"><h4>favorites</h4><p>id<br>user_id<br>vocabulary_id<br>createdAt</p></div>
+                        <div class="table"><h4>achievements</h4><p>id<br>name<br>description<br>target<br>rewardXp</p></div>
+                        <div class="table"><h4>payments</h4><p>id<br>user_id<br>planType<br>amount<br>status<br>paidAt</p></div>
+                        <div class="table"><h4>progress</h4><p>id<br>user_id<br>vocabulary_id<br>status<br>reviewCount</p></div>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="lane admin">
+                <div class="lane-title">Admin Flow</div>
+                <div class="steps">
+                    <div class="step"><div class="icon green">01</div><div><strong>Admin Login</strong><span>JWT contains ADMIN role</span></div></div>
+                    <div class="step"><div class="icon green">02</div><div><strong>Admin Route</strong><span>/api/admin/** restricted</span></div></div>
+                    <div class="step"><div class="icon blue">03</div><div><strong>View Dashboard</strong><span>Users, topics, vocabularies, quiz attempts</span></div></div>
+                    <div class="step"><div class="icon purple">04</div><div><strong>Manage Topics</strong><span>Create, update, approve, lock</span></div></div>
+                    <div class="step"><div class="icon yellow">05</div><div><strong>Monitor Premium</strong><span>Payments and subscriptions</span></div></div>
+                    <div class="step"><div class="icon orange">06</div><div><strong>Review Analytics</strong><span>Top learners and topic overview</span></div></div>
+                    <div class="step"><div class="icon green">07</div><div><strong>Keep Content Safe</strong><span>Moderate public learning material</span></div></div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="bottom">
+            <div class="flow">
+                <h3 class="box-title">Main Learning Flow</h3>
+                <div class="flow-row">
+                    <div class="flow-item"><div class="icon blue">WEB</div>Open app</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-item"><div class="icon green">JWT</div>Login</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-item"><div class="icon purple">TOP</div>Choose topic</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-item"><div class="icon purple">CARD</div>Flashcards</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-item"><div class="icon yellow">QUIZ</div>Practice</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-item"><div class="icon green">XP</div>Level up</div>
+                    <div class="arrow">→</div>
+                    <div class="flow-item"><div class="icon orange">RANK</div>Ranking</div>
+                </div>
+            </div>
+
+            <div class="stack">
+                <h3 class="box-title">System Stack</h3>
+                <div class="stack-row">
+                    <div class="stack-item"><div class="icon blue">React</div>Frontend</div>
+                    <div class="arrow">HTTP</div>
+                    <div class="stack-item"><div class="icon orange">Boot</div>Backend</div>
+                    <div class="arrow">JPA</div>
+                    <div class="stack-item"><div class="icon green">SQL</div>MySQL</div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <h3 class="box-title">Legend</h3>
+                <div class="legend-item"><div class="line blue"></div><span>User / frontend</span></div>
+                <div class="legend-item"><div class="line green"></div><span>Admin / success</span></div>
+                <div class="legend-item"><div class="line purple"></div><span>Learning modules</span></div>
+                <div class="legend-item"><div class="line orange"></div><span>Backend / security</span></div>
+            </div>
+        </section>
+
+        <p class="print-note">Tip: Open this file in a browser and print/export to PDF or capture it as an image for your report.</p>
+    </main>
+</body>
+</html>

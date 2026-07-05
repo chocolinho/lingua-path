@@ -218,7 +218,7 @@ function Vocabularies() {
     };
 
     return (
-        <div className="mx-auto max-w-7xl">
+        <div className="app-page">
             <PremiumLockedModal
                 open={premiumModalOpen}
                 title="Vocabulary limit reached"
@@ -226,23 +226,23 @@ function Vocabularies() {
                 onClose={() => setPremiumModalOpen(false)}
             />
 
-            <section className="mb-6 rounded-[1.75rem] bg-gradient-to-br from-[#1CB0F6] via-[#58CC02] to-[#CE82FF] p-6 text-white shadow-xl shadow-sky-100 dark:shadow-none md:p-8">
+            <section className="kid-panel-soft mb-6 p-6 md:p-8">
                 <div>
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-black text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
                         <Crown className="h-4 w-4" />
                         Vocabulary workspace
                     </div>
-                    <h1 className="text-3xl font-bold md:text-5xl">
+                    <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                         Manage Vocabulary
                     </h1>
 
-                    <p className="mt-3 max-w-2xl font-medium text-white/90">
+                    <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                         Create, update, and manage English vocabulary.
                     </p>
                 </div>
             </section>
 
-            <section className="mb-6 rounded-[1.5rem] border border-sky-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <section className="kid-panel mb-6 p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
                         <div
@@ -285,13 +285,14 @@ function Vocabularies() {
 
             <form
                 onSubmit={handleSearch}
-                className="mb-6 rounded-[1.5rem] border border-sky-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                className="kid-panel mb-6 p-5"
             >
                 <div className="flex flex-col md:flex-row gap-4">
                     <input
                         type="text"
                         placeholder="Search vocabulary by word or meaning..."
-                        className="flex-1 rounded-2xl border border-slate-200 bg-slate-50 p-4 outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                        aria-label="Search vocabulary"
+                        className="kid-input flex-1 p-4"
                         value={searchKeyword}
                         onChange={(e) => setSearchKeyword(e.target.value)}
                     />
@@ -326,7 +327,7 @@ function Vocabularies() {
 
             <form
                 onSubmit={handleSubmit}
-                className="mb-6 rounded-[1.5rem] border border-green-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                className="kid-panel mb-6 p-6"
             >
                 <h2 className="mb-4 text-xl font-bold text-slate-950 dark:text-white">
                     {editingId ? "Edit Vocabulary" : "Add New Vocabulary"}
@@ -342,7 +343,8 @@ function Vocabularies() {
                     <input
                         name="word"
                         placeholder="Word"
-                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4 outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                        aria-label="Word"
+                        className="kid-input p-4"
                         value={form.word}
                         onChange={handleChange}
                     />
@@ -350,7 +352,8 @@ function Vocabularies() {
                     <input
                         name="meaning"
                         placeholder="Meaning"
-                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4 outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                        aria-label="Meaning"
+                        className="kid-input p-4"
                         value={form.meaning}
                         onChange={handleChange}
                     />
@@ -358,14 +361,16 @@ function Vocabularies() {
                     <input
                         name="exampleSentence"
                         placeholder="Example sentence"
-                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4 outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                        aria-label="Example sentence"
+                        className="kid-input p-4"
                         value={form.exampleSentence}
                         onChange={handleChange}
                     />
 
                     <select
                         name="topicId"
-                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4 outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                        aria-label="Topic"
+                        className="kid-input p-4"
                         value={form.topicId}
                         onChange={handleChange}
                     >
@@ -392,7 +397,7 @@ function Vocabularies() {
                 <div className="flex flex-col md:flex-row gap-4 mt-5">
                     <button
                         type="submit"
-                        className="rounded-2xl bg-[#58CC02] px-7 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100"
+                        className="kid-button kid-button-green px-7 py-4"
                     >
                         {editingId ? "Update Vocabulary" : "Add Vocabulary"}
                     </button>
@@ -409,7 +414,7 @@ function Vocabularies() {
                 </div>
             </form>
 
-            <div className="overflow-hidden rounded-[1.5rem] border border-sky-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="kid-panel overflow-hidden">
                 <div className="border-b border-slate-100 p-6 dark:border-slate-800">
                     <h2 className="text-xl font-bold text-slate-950 dark:text-white">
                         Vocabulary List
@@ -477,11 +482,11 @@ function Vocabularies() {
                                             {vocabulary.word}
                                         </td>
 
-                                        <td className="p-4 text-slate-600">
+                                        <td className="p-4 text-slate-600 dark:text-slate-300">
                                             {vocabulary.meaning}
                                         </td>
 
-                                        <td className="p-4 text-slate-500">
+                                        <td className="p-4 text-slate-500 dark:text-slate-400">
                                             {vocabulary.exampleSentence || "-"}
                                         </td>
 
@@ -502,7 +507,7 @@ function Vocabularies() {
                                                         )
                                                     }
                                                     disabled={!canManageVocabulary}
-                                                    className="rounded-xl bg-sky-50 px-4 py-2 font-bold text-[#1CB0F6] transition-all hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-40"
+                                                    className="rounded-xl bg-sky-50 px-4 py-2 font-bold text-[#1CB0F6] transition-all hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-sky-950"
                                                 >
                                                     Edit
                                                 </button>
@@ -515,7 +520,7 @@ function Vocabularies() {
                                                         )
                                                     }
                                                     disabled={!canManageVocabulary}
-                                                    className="rounded-xl bg-red-50 px-4 py-2 font-bold text-red-500 transition-all hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-40"
+                                                    className="rounded-xl bg-red-50 px-4 py-2 font-bold text-red-500 transition-all hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-red-950/40"
                                                 >
                                                     Delete
                                                 </button>

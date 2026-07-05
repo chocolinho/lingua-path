@@ -60,18 +60,18 @@ function Register() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 via-sky-50 to-yellow-50 flex items-center justify-center px-4 py-10">
+        <div className="flex min-h-screen items-center justify-center bg-[#F6F8FB] px-4 py-10 dark:bg-slate-950">
             <div className="w-full max-w-md">
                 <Link
                     to="/"
-                    className="flex items-center justify-center gap-3 mb-8"
+                    className="mb-8 flex items-center justify-center gap-3"
                 >
-                    <div className="w-14 h-14 rounded-2xl bg-[#58CC02] flex items-center justify-center shadow-lg">
-                        <BookOpen className="w-8 h-8 text-white" />
+                    <div className="flex h-14 w-14 items-center justify-center rounded-[1.35rem] bg-[#58CC02] text-white shadow-[0_5px_0_#46a302] dark:shadow-none">
+                        <BookOpen className="h-8 w-8" />
                     </div>
 
                     <div>
-                        <h1 className="text-3xl font-black text-slate-800">
+                        <h1 className="text-3xl font-black text-slate-900 dark:text-white">
                             LinguaKid
                         </h1>
                         <p className="text-sm font-bold text-slate-400">
@@ -82,33 +82,33 @@ function Register() {
 
                 <form
                     onSubmit={handleRegister}
-                    className="bg-white rounded-[2rem] shadow-2xl p-8 border border-white"
+                    className="kid-panel p-8"
                 >
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-black text-slate-800">
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white">
                             Create Account
                         </h2>
 
-                        <p className="text-slate-400 font-semibold mt-2">
+                        <p className="mt-2 font-semibold text-slate-500 dark:text-slate-400">
                             Start your English learning journey
                         </p>
                     </div>
 
                     {errorMessage && (
-                        <div className="mb-5 bg-red-50 text-red-500 rounded-2xl px-4 py-3 text-sm font-bold">
+                        <div className="mb-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-500 dark:bg-red-950/40">
                             {errorMessage}
                         </div>
                     )}
 
                     {successMessage && (
-                        <div className="mb-5 bg-green-50 text-[#58CC02] rounded-2xl px-4 py-3 text-sm font-bold">
+                        <div className="mb-5 rounded-2xl bg-green-50 px-4 py-3 text-sm font-bold text-[#58CC02] dark:bg-green-950/40">
                             {successMessage}
                         </div>
                     )}
 
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-black text-slate-600 mb-2">
+                            <label htmlFor="register-name" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
                                 Name
                             </label>
 
@@ -117,9 +117,10 @@ function Register() {
 
                                 <input
                                     name="name"
+                                    id="register-name"
                                     type="text"
                                     placeholder="Enter your name"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 font-semibold outline-none focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 transition-all"
+                                    className="kid-input py-4 pl-12 pr-4"
                                     value={form.name}
                                     onChange={handleChange}
                                 />
@@ -127,7 +128,7 @@ function Register() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-black text-slate-600 mb-2">
+                            <label htmlFor="register-email" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
                                 Email
                             </label>
 
@@ -136,9 +137,10 @@ function Register() {
 
                                 <input
                                     name="email"
+                                    id="register-email"
                                     type="email"
                                     placeholder="Enter your email"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 font-semibold outline-none focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 transition-all"
+                                    className="kid-input py-4 pl-12 pr-4"
                                     value={form.email}
                                     onChange={handleChange}
                                 />
@@ -146,7 +148,7 @@ function Register() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-black text-slate-600 mb-2">
+                            <label htmlFor="register-password" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
                                 Password
                             </label>
 
@@ -155,9 +157,10 @@ function Register() {
 
                                 <input
                                     name="password"
+                                    id="register-password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter your password"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-12 font-semibold outline-none focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 transition-all"
+                                    className="kid-input py-4 pl-12 pr-12"
                                     value={form.password}
                                     onChange={handleChange}
                                 />
@@ -168,6 +171,7 @@ function Register() {
                                         setShowPassword(!showPassword)
                                     }
                                     className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
                                 >
                                     {showPassword ? (
                                         <EyeOff className="w-5 h-5" />
@@ -182,7 +186,7 @@ function Register() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full mt-7 bg-[#58CC02] text-white py-4 rounded-2xl font-black shadow-lg hover:scale-[1.02] transition-all disabled:opacity-60"
+                        className="kid-button kid-button-green mt-7 w-full py-4 disabled:opacity-60"
                     >
                         {loading ? "Creating account..." : "Register"}
                     </button>

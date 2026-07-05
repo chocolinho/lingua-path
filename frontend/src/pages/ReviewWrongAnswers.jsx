@@ -106,7 +106,7 @@ function ReviewWrongAnswers() {
 
     if (completed) {
         return (
-            <div className="mx-auto max-w-3xl rounded-[1.5rem] border border-green-100 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="kid-panel mx-auto max-w-3xl p-8 text-center">
                 <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-green-50 text-[#58CC02] dark:bg-green-950">
                     <CheckCircle2 className="h-11 w-11" />
                 </div>
@@ -131,15 +131,15 @@ function ReviewWrongAnswers() {
     if (!currentItem) {
         return (
             <div className="mx-auto max-w-3xl space-y-6">
-                <section className="rounded-[1.75rem] bg-gradient-to-br from-yellow-400 via-[#58CC02] to-[#1CB0F6] p-6 text-white shadow-xl shadow-green-100 dark:shadow-none md:p-8">
-                    <h1 className="text-3xl font-bold md:text-5xl">
+                <section className="kid-panel-soft p-6 md:p-8">
+                    <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                         Review Practice
                     </h1>
-                    <p className="mt-3 font-medium text-white/90">
+                    <p className="mt-3 font-semibold text-slate-600 dark:text-slate-300">
                         Practice words you answered incorrectly.
                     </p>
                 </section>
-                <div className="rounded-[1.5rem] border border-green-100 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div className="kid-panel p-8 text-center">
                     <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-[#58CC02]" />
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         All clear
@@ -154,17 +154,17 @@ function ReviewWrongAnswers() {
 
     return (
         <div className="mx-auto max-w-3xl space-y-6">
-            <section className="rounded-[1.75rem] bg-gradient-to-br from-yellow-400 via-[#58CC02] to-[#1CB0F6] p-6 text-white shadow-xl shadow-green-100 dark:shadow-none md:p-8">
+            <section className="kid-panel-soft p-6 md:p-8">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold md:text-5xl">
+                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                             Review Practice
                         </h1>
-                        <p className="mt-3 font-medium text-white/90">
+                        <p className="mt-3 font-semibold text-slate-600 dark:text-slate-300">
                             Fix mistakes by answering again.
                         </p>
                     </div>
-                    <div className="rounded-2xl bg-white/20 px-5 py-4 font-bold">
+                    <div className="rounded-2xl border-2 border-green-100 bg-white px-5 py-4 font-black text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
                         {currentIndex + 1} / {items.length}
                     </div>
                 </div>
@@ -198,7 +198,7 @@ function ReviewWrongAnswers() {
 
             <form
                 onSubmit={handleSubmit}
-                className="rounded-[1.5rem] border border-green-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-8"
+                className="kid-panel p-6 md:p-8"
             >
                 <div className="mb-6 flex items-start justify-between gap-4">
                     <div>

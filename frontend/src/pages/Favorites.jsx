@@ -48,13 +48,13 @@ function Favorites() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="rounded-[1.75rem] bg-gradient-to-br from-[#CE82FF] via-[#1CB0F6] to-[#58CC02] p-6 text-white shadow-xl shadow-sky-100 dark:shadow-none md:p-8">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+            <section className="kid-panel-soft p-6 md:p-8">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-100 px-3 py-1.5 text-sm font-black text-purple-800 dark:border-purple-900 dark:bg-purple-950 dark:text-purple-200">
                     <Heart className="h-4 w-4" />
                     Quick review
                 </div>
-                <h1 className="text-3xl font-bold md:text-5xl">Favorite Words</h1>
-                <p className="mt-3 max-w-2xl font-medium text-white/90">
+                <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">Favorite Words</h1>
+                <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                     Keep useful vocabulary close for pronunciation and quick review.
                 </p>
             </section>
@@ -78,7 +78,7 @@ function Favorites() {
                     {favorites.map((favorite) => (
                         <article
                             key={favorite.id}
-                            className="rounded-[1.5rem] border border-purple-100 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+                            className="kid-card p-5"
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div>

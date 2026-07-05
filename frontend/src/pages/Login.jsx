@@ -36,10 +36,11 @@ function Login() {
         try {
             setLoading(true);
 
-            const data = await login(email, password);
+            const normalizedEmail = email.trim();
+            const data = await login(normalizedEmail, password);
 
             if (rememberMe) {
-                localStorage.setItem("rememberedEmail", email);
+                localStorage.setItem("rememberedEmail", normalizedEmail);
             } else {
                 localStorage.removeItem("rememberedEmail");
             }
@@ -64,16 +65,16 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 via-sky-50 to-yellow-50 flex items-center justify-center px-4 py-10">
-            <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
+        <div className="flex min-h-screen items-center justify-center bg-[#F6F8FB] px-4 py-10 dark:bg-slate-950">
+            <div className="grid w-full max-w-6xl items-center gap-8 lg:grid-cols-2">
                 <div className="hidden lg:block">
-                    <Link to="/" className="inline-flex items-center gap-3 mb-8">
-                        <div className="w-14 h-14 rounded-2xl bg-[#58CC02] flex items-center justify-center shadow-lg">
-                            <BookOpen className="w-8 h-8 text-white" />
+                    <Link to="/" className="mb-8 inline-flex items-center gap-3">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-[1.35rem] border-2 border-green-200 bg-[#58CC02] text-white shadow-[0_5px_0_#46a302] dark:border-green-900 dark:shadow-none">
+                            <BookOpen className="h-8 w-8" />
                         </div>
 
                         <div>
-                            <h1 className="text-3xl font-black text-slate-800">
+                            <h1 className="text-3xl font-black text-slate-900 dark:text-white">
                                 LinguaKid
                             </h1>
                             <p className="text-sm font-bold text-slate-400">
@@ -82,26 +83,26 @@ function Login() {
                         </div>
                     </Link>
 
-                    <div className="bg-white/70 backdrop-blur-sm rounded-[2.5rem] p-8 shadow-xl border border-white">
-                        <div className="inline-flex items-center gap-2 bg-green-100 text-[#58CC02] px-4 py-2 rounded-full font-black mb-6">
-                            <Sparkles className="w-5 h-5" />
+                    <div className="kid-panel-soft p-8">
+                        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-100 px-4 py-2 font-black text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+                            <Sparkles className="h-5 w-5" />
                             Learn English the fun way
                         </div>
 
-                        <h2 className="text-5xl font-black text-slate-800 leading-tight">
+                        <h2 className="text-5xl font-black leading-tight text-slate-900 dark:text-white">
                             Welcome back,
                             <span className="block text-[#58CC02]">
                                 young learner!
                             </span>
                         </h2>
 
-                        <p className="text-slate-500 text-lg mt-5 leading-relaxed">
+                        <p className="mt-5 text-lg font-semibold leading-relaxed text-slate-600 dark:text-slate-300">
                             Continue your English journey, collect XP, unlock
                             badges, and keep your daily streak alive.
                         </p>
 
                         <div className="grid grid-cols-3 gap-4 mt-8">
-                            <div className="bg-white rounded-3xl p-5 shadow-sm">
+                            <div className="kid-card p-5">
                                 <p className="text-3xl font-black text-orange-500">
                                     3
                                 </p>
@@ -110,7 +111,7 @@ function Login() {
                                 </p>
                             </div>
 
-                            <div className="bg-white rounded-3xl p-5 shadow-sm">
+                            <div className="kid-card p-5">
                                 <p className="text-3xl font-black text-yellow-500">
                                     120
                                 </p>
@@ -119,7 +120,7 @@ function Login() {
                                 </p>
                             </div>
 
-                            <div className="bg-white rounded-3xl p-5 shadow-sm">
+                            <div className="kid-card p-5">
                                 <p className="text-3xl font-black text-purple-500">
                                     8
                                 </p>
@@ -132,13 +133,13 @@ function Login() {
                 </div>
 
                 <div className="w-full max-w-md mx-auto">
-                    <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-                        <div className="w-14 h-14 rounded-2xl bg-[#58CC02] flex items-center justify-center shadow-lg">
-                            <BookOpen className="w-8 h-8 text-white" />
+                    <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-[1.35rem] bg-[#58CC02] text-white shadow-[0_5px_0_#46a302] dark:shadow-none">
+                            <BookOpen className="h-8 w-8" />
                         </div>
 
                         <div>
-                            <h1 className="text-3xl font-black text-slate-800">
+                            <h1 className="text-3xl font-black text-slate-900 dark:text-white">
                                 LinguaKid
                             </h1>
                             <p className="text-sm font-bold text-slate-400">
@@ -149,27 +150,27 @@ function Login() {
 
                     <form
                         onSubmit={handleLogin}
-                        className="bg-white rounded-[2rem] shadow-2xl p-7 md:p-8 border border-white"
+                        className="kid-panel p-7 md:p-8"
                     >
                         <div className="text-center mb-8">
-                            <h2 className="text-3xl font-black text-slate-800">
+                            <h2 className="text-3xl font-black text-slate-900 dark:text-white">
                                 Login
                             </h2>
 
-                            <p className="text-slate-400 font-semibold mt-2">
+                            <p className="mt-2 font-semibold text-slate-500 dark:text-slate-400">
                                 Continue your learning adventure
                             </p>
                         </div>
 
                         {errorMessage && (
-                            <div className="mb-5 bg-red-50 text-red-500 rounded-2xl px-4 py-3 text-sm font-bold">
+                            <div className="mb-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-500 dark:bg-red-950/40">
                                 {errorMessage}
                             </div>
                         )}
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-black text-slate-600 mb-2">
+                                <label htmlFor="login-email" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
                                     Email
                                 </label>
 
@@ -177,10 +178,11 @@ function Login() {
                                     <Mail className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
 
                                     <input
+                                        id="login-email"
                                         type="email"
                                         placeholder="Enter your email"
                                         autoComplete="email"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-4 font-semibold outline-none focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 transition-all"
+                                        className="kid-input py-4 pl-12 pr-4"
                                         value={email}
                                         onChange={(e) =>
                                             setEmail(e.target.value)
@@ -190,7 +192,7 @@ function Login() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-black text-slate-600 mb-2">
+                                <label htmlFor="login-password" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
                                     Password
                                 </label>
 
@@ -198,6 +200,7 @@ function Login() {
                                     <Lock className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
 
                                     <input
+                                        id="login-password"
                                         type={
                                             showPassword
                                                 ? "text"
@@ -205,7 +208,7 @@ function Login() {
                                         }
                                         placeholder="Enter your password"
                                         autoComplete="current-password"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-12 pr-12 font-semibold outline-none focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 transition-all"
+                                        className="kid-input py-4 pl-12 pr-12"
                                         value={password}
                                         onChange={(e) =>
                                             setPassword(e.target.value)
@@ -218,6 +221,7 @@ function Login() {
                                             setShowPassword(!showPassword)
                                         }
                                         className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        aria-label={showPassword ? "Hide password" : "Show password"}
                                     >
                                         {showPassword ? (
                                             <EyeOff className="w-5 h-5" />
@@ -244,19 +248,12 @@ function Login() {
                                     Remember me
                                 </span>
                             </label>
-
-                            <Link
-                                to="/forgot-password"
-                                className="text-sm font-black text-[#1CB0F6] hover:underline"
-                            >
-                                Forgot password?
-                            </Link>
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full mt-7 bg-[#58CC02] text-white py-4 rounded-2xl font-black shadow-lg hover:scale-[1.02] hover:bg-green-500 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="kid-button kid-button-green mt-7 w-full py-4 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {loading ? "Logging in..." : "Login"}
                         </button>

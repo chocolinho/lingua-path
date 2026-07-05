@@ -70,32 +70,32 @@ function AdminAnalytics() {
     ];
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
-            <section className="rounded-[1.75rem] bg-gradient-to-br from-[#1CB0F6] via-[#58CC02] to-[#CE82FF] p-6 text-white shadow-xl shadow-sky-100 dark:shadow-none md:p-8">
+        <div className="app-page space-y-6">
+            <section className="kid-panel-soft p-6 md:p-8">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-black text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
                             <BarChart3 className="h-4 w-4" />
                             Platform analytics
                         </div>
-                        <h1 className="text-3xl font-bold md:text-5xl">
+                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                             Learning platform health.
                         </h1>
-                        <p className="mt-3 max-w-2xl font-medium text-white/90">
+                        <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                             Monitor user growth, premium adoption, quiz performance, and content coverage.
                         </p>
                     </div>
 
-                    <div className="rounded-[1.5rem] bg-white/20 p-5 backdrop-blur lg:min-w-72">
-                        <p className="text-sm font-bold text-white/75">
+                    <div className="rounded-[1.5rem] border-2 border-sky-100 bg-white p-5 lg:min-w-72 dark:border-slate-800 dark:bg-slate-900">
+                        <p className="text-sm font-bold text-slate-500 dark:text-slate-400">
                             Premium Conversion
                         </p>
-                        <p className="mt-1 text-5xl font-bold">
+                        <p className="mt-1 text-5xl font-bold text-slate-950 dark:text-white">
                             {analytics?.premiumConversionRate ?? 0}%
                         </p>
-                        <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/25">
+                        <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                             <div
-                                className="h-full rounded-full bg-white transition-all duration-700"
+                                className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
                                 style={{ width: `${analytics?.premiumConversionRate ?? 0}%` }}
                             />
                         </div>
@@ -230,7 +230,7 @@ function AdminAnalytics() {
 
 function MetricCard({ label, value, helper, icon: Icon, color }) {
     return (
-        <article className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+        <article className="kid-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 <Icon className="h-7 w-7" />
             </div>
@@ -243,7 +243,7 @@ function MetricCard({ label, value, helper, icon: Icon, color }) {
 
 function Panel({ title, description, icon, children }) {
     return (
-        <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section className="kid-panel p-5">
             <div className="mb-5 flex items-start gap-3">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1CB0F6] dark:bg-sky-950">
                     {icon}

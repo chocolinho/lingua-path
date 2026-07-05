@@ -39,8 +39,8 @@ public class TopicService {
         TopicApprovalStatus approvalStatus = resolveApprovalStatus(user, visibility, request.getApprovalStatus());
 
         Topic topic = Topic.builder()
-                .name(request.getName())
-                .description(request.getDescription())
+                .name(request.getName().trim())
+                .description(normalizeOptionalText(request.getDescription()))
                 .owner(user)
                 .visibility(visibility)
                 .accessType(resolveAccessType(user, request.getAccessType(), TopicAccessType.FREE))
@@ -69,8 +69,8 @@ public class TopicService {
         Topic existingTopic = findTopicById(id);
         subscriptionService.enforceCanManageTopic(user, existingTopic);
 
-        existingTopic.setName(request.getName());
-        existingTopic.setDescription(request.getDescription());
+        existingTopic.setName(request.getName().trim());
+        existingTopic.setDescription(normalizeOptionalText(request.getDescription()));
 
         if (request.getVisibility() != null) {
             existingTopic.setVisibility(request.getVisibility());
@@ -143,5 +143,9 @@ public class TopicService {
         }
 
         return TopicApprovalStatus.APPROVED;
+    }
+
+    private String normalizeOptionalText(String value) {
+        return value == null ? null : value.trim();
     }
 }

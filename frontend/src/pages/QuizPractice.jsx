@@ -341,12 +341,12 @@ function QuizPractice() {
                     onClose={() => setPremiumModalOpen(false)}
                 />
                 {renderTopicSelector()}
-                <div className="rounded-[2rem] border border-yellow-100 bg-yellow-50 p-8 text-center">
+                <div className="rounded-[2rem] border border-yellow-100 bg-yellow-50 p-8 text-center dark:border-yellow-900 dark:bg-yellow-950/40">
                     <Target className="mx-auto mb-4 h-12 w-12 text-yellow-500" />
-                    <h1 className="text-2xl font-black text-slate-900">
+                    <h1 className="text-2xl font-black text-slate-900 dark:text-white">
                         Quiz is not ready yet
                     </h1>
-                    <p className="mt-3 font-semibold text-slate-500">
+                    <p className="mt-3 font-semibold text-slate-500 dark:text-slate-300">
                         {errorMessage ||
                             "Choose a topic with at least 4 words to start."}
                     </p>
@@ -444,8 +444,8 @@ function QuizPractice() {
                                     key={`${answer.questionId}-${index}`}
                                     className={`rounded-2xl border p-4 ${
                                         answer.isCorrect
-                                            ? "border-green-100 bg-green-50"
-                                            : "border-red-100 bg-red-50"
+                                            ? "border-green-100 bg-green-50 dark:border-green-900 dark:bg-green-950/40"
+                                            : "border-red-100 bg-red-50 dark:border-red-900 dark:bg-red-950/40"
                                     }`}
                                 >
                                     <div className="flex items-start gap-3">
@@ -455,10 +455,10 @@ function QuizPractice() {
                                             <XCircle className="mt-1 h-5 w-5 shrink-0 text-red-500" />
                                         )}
                                         <div>
-                                            <p className="font-bold text-slate-950">
+                                            <p className="font-bold text-slate-950 dark:text-white">
                                                 {index + 1}. {answer.word}
                                             </p>
-                                            <p className="mt-1 text-sm font-semibold text-slate-500">
+                                            <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-300">
                                                 Your answer:{" "}
                                                 <span
                                                     className={
@@ -471,7 +471,7 @@ function QuizPractice() {
                                                 </span>
                                             </p>
                                             {!answer.isCorrect && (
-                                                <p className="text-sm font-semibold text-slate-500">
+                                                <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
                                                     Correct answer:{" "}
                                                     <span className="font-bold text-[#58CC02]">
                                                         {answer.correctAnswer}
@@ -573,9 +573,9 @@ function QuizPractice() {
                                 aria-pressed={isSelected}
                                 className={`flex items-center justify-between gap-3 rounded-2xl border-2 p-5 text-left font-bold transition-all focus:outline-none focus:ring-4 focus:ring-sky-100 ${
                                     showCorrect
-                                        ? "border-[#58CC02] bg-green-50 text-[#58CC02]"
+                                        ? "border-[#58CC02] bg-green-50 text-[#58CC02] dark:bg-green-950/40"
                                         : showWrong
-                                          ? "border-red-400 bg-red-50 text-red-500"
+                                          ? "border-red-400 bg-red-50 text-red-500 dark:bg-red-950/40"
                                           : "border-slate-200 bg-slate-50 text-slate-700 hover:-translate-y-0.5 hover:border-[#1CB0F6] hover:bg-blue-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
                                 }`}
                             >
@@ -597,8 +597,8 @@ function QuizPractice() {
                         aria-live="polite"
                         className={`mt-5 rounded-2xl p-4 font-semibold ${
                             selectedOption.isCorrect
-                                ? "bg-green-50 text-[#58CC02]"
-                                : "bg-red-50 text-red-500"
+                                ? "bg-green-50 text-[#58CC02] dark:bg-green-950/40"
+                                : "bg-red-50 text-red-500 dark:bg-red-950/40"
                         }`}
                     >
                         {selectedOption.isCorrect

@@ -1,31 +1,38 @@
 function ProgressCard({ title, value, target }) {
-    const percent = Math.min(Math.round((value / target) * 100), 100);
+    const percent = target > 0 ? Math.min(Math.round((value / target) * 100), 100) : 0;
 
     return (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-4">
+        <div className="kid-card p-6">
+            <div className="mb-4 flex items-center justify-between gap-4">
                 <div>
-                    <h3 className="text-xl font-black text-slate-800">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white">
                         {title}
                     </h3>
 
-                    <p className="text-slate-500 text-sm">
+                    <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
                         {value} / {target} completed
                     </p>
                 </div>
 
-                <div className="w-16 h-16 rounded-full bg-[#58CC02]/10 flex items-center justify-center">
-                    <span className="text-[#58CC02] font-black text-lg">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#58CC02]/10">
+                    <span className="text-lg font-black text-[#58CC02]">
                         {percent}%
                     </span>
                 </div>
             </div>
 
-            <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div
+                className="h-4 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"
+                role="progressbar"
+                aria-label={`${title} progress`}
+                aria-valuenow={percent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+            >
                 <div
-                    className="h-full bg-[#58CC02] rounded-full transition-all duration-500"
+                    className="h-full rounded-full bg-[#58CC02] transition-all duration-500"
                     style={{ width: `${percent}%` }}
-                ></div>
+                />
             </div>
         </div>
     );

@@ -16,10 +16,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class VocabularyService {
+
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+            "id",
+            "word",
+            "meaning",
+            "exampleSentence"
+    );
 
     private final TopicRepository topicRepository;
     private final VocabularyRepository vocabularyRepository;
@@ -46,9 +54,9 @@ public class VocabularyService {
         subscriptionService.enforceCanCreateVocabulary(user);
 
         Vocabulary vocabulary = Vocabulary.builder()
-                .word(request.getWord())
-                .meaning(request.getMeaning())
-                .exampleSentence(request.getExampleSentence())
+                .word(request.getWord().trim())
+                .meaning(request.getMeaning().trim())
+                .exampleSentence(normalizeOptionalText(request.getExampleSentence()))
                 .topic(topic)
                 .build();
 
@@ -62,9 +70,9 @@ public class VocabularyService {
         subscriptionService.enforceCanManageTopic(user, existingVocabulary.getTopic());
         subscriptionService.enforceCanManageTopic(user, topic);
 
-        existingVocabulary.setWord(request.getWord());
-        existingVocabulary.setMeaning(request.getMeaning());
-        existingVocabulary.setExampleSentence(request.getExampleSentence());
+        existingVocabulary.setWord(request.getWord().trim());
+        existingVocabulary.setMeaning(request.getMeaning().trim());
+        existingVocabulary.setExampleSentence(normalizeOptionalText(request.getExampleSentence()));
         existingVocabulary.setTopic(topic);
 
         return mapToResponse(vocabularyRepository.save(existingVocabulary));
@@ -101,7 +109,7 @@ public class VocabularyService {
 
     public List<VocabularyResponse> searchVocabulary(String keyword, User user) {
         return vocabularyRepository
-                .findByWordContainingIgnoreCase(keyword)
+                .findByWordContainingIgnoreCase(keyword.trim())
                 .stream()
                 .filter(vocabulary -> subscriptionService.canAccessTopic(user, vocabulary.getTopic()))
                 .map(this::mapToResponse)
@@ -114,8 +122,9 @@ public class VocabularyService {
             String sortField,
             User user) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortField));
-        List<VocabularyResponse> accessibleVocabularies = vocabularyRepository.findAll(Sort.by(sortField))
+        String safeSortField = resolveSortField(sortField);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(safeSortField));
+        List<VocabularyResponse> accessibleVocabularies = vocabularyRepository.findAll(Sort.by(safeSortField))
                 .stream()
                 .filter(vocabulary -> subscriptionService.canAccessTopic(user, vocabulary.getTopic()))
                 .map(this::mapToResponse)
@@ -131,11 +140,13 @@ public class VocabularyService {
             String sortField,
             User user) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortField));
+        String safeSortField = resolveSortField(sortField);
+        String normalizedKeyword = keyword == null ? "" : keyword.trim();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(safeSortField));
         List<VocabularyResponse> accessibleVocabularies = vocabularyRepository
                 .findByWordContainingIgnoreCaseOrMeaningContainingIgnoreCase(
-                        keyword,
-                        keyword,
+                        normalizedKeyword,
+                        normalizedKeyword,
                         pageable
                 )
                 .stream()
@@ -158,6 +169,10 @@ public class VocabularyService {
 
     private int resolveQuizQuestionLimit(User user, Integer requestedLimit) {
         if (requestedLimit != null) {
+            if (requestedLimit < 1) {
+                throw new RuntimeException("Quiz question limit must be at least 1");
+            }
+
             subscriptionService.enforceQuizQuestionLimit(user, requestedLimit);
             return requestedLimit;
         }
@@ -178,6 +193,24 @@ public class VocabularyService {
 
         int end = Math.min(start + pageable.getPageSize(), vocabularies.size());
         return new PageImpl<>(vocabularies.subList(start, end), pageable, vocabularies.size());
+    }
+
+    private String resolveSortField(String sortField) {
+        if (sortField == null || sortField.isBlank()) {
+            return "id";
+        }
+
+        String normalizedSortField = sortField.trim();
+
+        if (!ALLOWED_SORT_FIELDS.contains(normalizedSortField)) {
+            throw new RuntimeException("Invalid sort field");
+        }
+
+        return normalizedSortField;
+    }
+
+    private String normalizeOptionalText(String value) {
+        return value == null ? null : value.trim();
     }
 
     private VocabularyResponse mapToResponse(Vocabulary vocabulary) {

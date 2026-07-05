@@ -44,21 +44,21 @@ function Achievements() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="rounded-[1.75rem] bg-gradient-to-br from-yellow-400 via-[#58CC02] to-[#1CB0F6] p-6 text-white shadow-xl shadow-green-100 dark:shadow-none md:p-8">
+            <section className="kid-panel-soft p-6 md:p-8">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-100 px-3 py-1.5 text-sm font-black text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
                             <Trophy className="h-4 w-4" />
                             Badge collection
                         </div>
-                        <h1 className="text-3xl font-bold md:text-5xl">Achievements</h1>
-                        <p className="mt-3 font-medium text-white/90">
+                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">Achievements</h1>
+                        <p className="mt-3 font-semibold text-slate-600 dark:text-slate-300">
                             {unlockedCount} / {achievements.length} badges unlocked.
                         </p>
                     </div>
-                    <div className="rounded-2xl bg-white/20 px-5 py-4 text-center backdrop-blur">
-                        <p className="text-4xl font-bold">{unlockedCount}</p>
-                        <p className="text-xs font-bold uppercase text-white/75">
+                    <div className="rounded-2xl border-2 border-yellow-100 bg-white px-5 py-4 text-center dark:border-slate-800 dark:bg-slate-900">
+                        <p className="text-4xl font-black text-slate-950 dark:text-white">{unlockedCount}</p>
+                        <p className="text-xs font-black uppercase text-slate-400">
                             earned
                         </p>
                     </div>
@@ -82,7 +82,7 @@ function Achievements() {
                             key={achievement.code}
                             className={`rounded-[1.5rem] border p-5 shadow-sm transition-all ${
                                 achievement.unlocked
-                                    ? "border-yellow-100 bg-white hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+                                    ? "kid-card border-yellow-100 bg-white dark:border-slate-800 dark:bg-slate-900"
                                     : "border-slate-200 bg-slate-50 opacity-80 dark:border-slate-800 dark:bg-slate-900"
                             }`}
                         >

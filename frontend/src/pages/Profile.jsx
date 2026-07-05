@@ -99,7 +99,7 @@ function Profile() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-7">
+            <section className="kid-panel overflow-hidden p-6 md:p-7">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#58CC02] dark:bg-green-950">
@@ -187,10 +187,10 @@ function Profile() {
             </div>
 
             <section
-                className={`rounded-[1.75rem] border p-6 shadow-sm ${
+                    className={`rounded-[1.75rem] border-2 p-6 shadow-sm ${
                     isPremium
-                        ? "border-yellow-100 bg-yellow-50"
-                        : "border-slate-100 bg-white"
+                        ? "border-yellow-100 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-950/40"
+                        : "border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900"
                 }`}
             >
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -208,10 +208,10 @@ function Profile() {
                             <p className="text-sm font-bold text-slate-400">
                                 Current Plan
                             </p>
-                            <h2 className="text-2xl font-bold text-slate-950">
+                            <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                                 {isPremium ? "Premium" : "Free"} Plan
                             </h2>
-                            <p className="mt-2 font-medium text-slate-500">
+                            <p className="mt-2 font-medium text-slate-500 dark:text-slate-400">
                                 Status: {subscriptionStatus}
                                 {premiumUntil ? ` - valid until ${premiumUntil}` : ""}
                             </p>
@@ -348,7 +348,7 @@ function Profile() {
 
 function ProfileStat({ icon, label, value, color }) {
     return (
-        <div className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+        <div className="kid-card p-5">
             <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${color}`}>
                 {icon}
             </div>

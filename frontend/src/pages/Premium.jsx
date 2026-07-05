@@ -73,31 +73,31 @@ function Premium() {
     };
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
-            <section className="overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-yellow-300 via-[#58CC02] to-[#1CB0F6] p-6 text-slate-900 shadow-xl shadow-yellow-100 dark:shadow-none md:p-8">
+        <div className="app-page space-y-6">
+            <section className="kid-panel-soft overflow-hidden p-6 md:p-8">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/40 px-3 py-1.5 text-sm font-bold">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-100 px-3 py-1.5 text-sm font-black text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
                             <Crown className="h-4 w-4" />
                             Premium Upgrade
                         </div>
-                        <h1 className="max-w-3xl text-3xl font-bold leading-tight md:text-5xl">
+                        <h1 className="max-w-3xl text-3xl font-black leading-tight text-slate-950 dark:text-white md:text-5xl">
                             Unlock the stronger learning mode.
                         </h1>
-                        <p className="mt-3 max-w-2xl font-medium text-slate-700">
+                        <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                             Premium opens advanced practice, premium topics, longer quizzes,
                             and deeper progress tools for serious English learning.
                         </p>
                     </div>
 
-                    <div className="rounded-[1.5rem] bg-white/55 p-5 backdrop-blur lg:min-w-72">
-                        <p className="text-sm font-bold text-slate-500">
+                    <div className="rounded-[1.5rem] border-2 border-yellow-100 bg-white p-5 lg:min-w-72 dark:border-slate-800 dark:bg-slate-900">
+                        <p className="text-sm font-black text-slate-500 dark:text-slate-400">
                             Current Plan
                         </p>
-                        <p className="mt-1 text-3xl font-bold text-slate-950">
+                        <p className="mt-1 text-3xl font-black text-slate-950 dark:text-white">
                             {isPremium ? "Premium" : "Free"}
                         </p>
-                        <p className="mt-2 font-semibold text-slate-600">
+                        <p className="mt-2 font-semibold text-slate-600 dark:text-slate-300">
                             {premiumUntil
                                 ? `Valid until ${premiumUntil}`
                                 : "Upgrade anytime with mock checkout."}
@@ -128,7 +128,7 @@ function Premium() {
                         return (
                             <article
                                 key={feature.title}
-                                className="rounded-[1.5rem] border border-yellow-100 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+                                className="kid-card p-5"
                             >
                                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-100 text-yellow-600">
                                     <Icon className="h-6 w-6" />
@@ -144,7 +144,7 @@ function Premium() {
                     })}
                 </div>
 
-                <aside className="rounded-[1.5rem] border border-yellow-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <aside className="kid-panel p-5">
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         Choose Plan
                     </h2>

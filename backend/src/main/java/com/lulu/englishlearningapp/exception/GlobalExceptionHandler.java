@@ -3,6 +3,9 @@ package com.lulu.englishlearningapp.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,35 +35,80 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDataAccessException(
             DataAccessException ex) {
 
-        Map<String, String> error = new HashMap<>();
-        error.put("message", "Database error: " + ex.getMostSpecificCause().getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(error);
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, "Database operation failed");
     }
 
     @ExceptionHandler(FeatureLockedException.class)
     public ResponseEntity<Map<String, String>> handleFeatureLockedException(
             FeatureLockedException ex) {
 
-        Map<String, String> error = new HashMap<>();
-        error.put("message", ex.getMessage());
+        return error(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
 
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(error);
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, String>> handleAuthenticationException(
+            AuthenticationException ex) {
+
+        return error(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> handleAccessDeniedException(
+            AccessDeniedException ex) {
+
+        return error(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleUnreadableRequest() {
+        return error(HttpStatus.BAD_REQUEST, "Request body is invalid");
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(
             RuntimeException ex) {
 
+        return error(resolveRuntimeStatus(ex.getMessage()), ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleException() {
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error");
+    }
+
+    private HttpStatus resolveRuntimeStatus(String message) {
+        if (message == null || message.isBlank()) {
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        String normalizedMessage = message.toLowerCase();
+
+        if (normalizedMessage.contains("invalid email or password")
+                || normalizedMessage.contains("authentication is null")) {
+            return HttpStatus.UNAUTHORIZED;
+        }
+
+        if (normalizedMessage.contains("not found")) {
+            return HttpStatus.NOT_FOUND;
+        }
+
+        if (normalizedMessage.contains("already exists")) {
+            return HttpStatus.CONFLICT;
+        }
+
+        if (normalizedMessage.contains("does not belong")) {
+            return HttpStatus.FORBIDDEN;
+        }
+
+        return HttpStatus.BAD_REQUEST;
+    }
+
+    private ResponseEntity<Map<String, String>> error(HttpStatus status, String message) {
         Map<String, String> error = new HashMap<>();
-        error.put("message", ex.getMessage());
+        error.put("message", message);
 
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(status)
                 .body(error);
     }
 }

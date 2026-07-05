@@ -103,7 +103,7 @@ function Topics() {
     };
 
     return (
-        <div className="mx-auto max-w-7xl">
+        <div className="app-page">
             <PremiumLockedModal
                 open={premiumModalOpen}
                 title="Custom topic limit reached"
@@ -111,22 +111,22 @@ function Topics() {
                 onClose={() => setPremiumModalOpen(false)}
             />
 
-            <section className="mb-6 rounded-[1.75rem] bg-gradient-to-br from-[#58CC02] via-[#1CB0F6] to-[#CE82FF] p-6 text-white shadow-xl shadow-green-100 dark:shadow-none md:p-8">
+            <section className="kid-panel-soft mb-6 p-6 md:p-8">
                 <div>
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-100 px-3 py-1.5 text-sm font-black text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
                         <Crown className="h-4 w-4" />
                         Topic workspace
                     </div>
-                    <h1 className="text-3xl font-bold md:text-5xl">
+                    <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                         Manage Topics
                     </h1>
-                    <p className="mt-3 max-w-2xl font-medium text-white/90">
+                    <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                         Create and manage learning topics.
                     </p>
                 </div>
             </section>
 
-            <section className="mb-6 rounded-[1.5rem] border border-green-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <section className="kid-panel mb-6 p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
                         <div
@@ -169,7 +169,7 @@ function Topics() {
 
             <form
                 onSubmit={handleSubmit}
-                className="mb-6 rounded-[1.5rem] border border-green-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                className="kid-panel mb-6 p-6"
             >
                 <h2 className="mb-4 text-xl font-bold text-slate-950 dark:text-white">
                     {editingId ? "Edit Topic" : "Add New Topic"}
@@ -185,14 +185,15 @@ function Topics() {
                     <input
                         type="text"
                         placeholder="Topic name"
-                        className="flex-1 rounded-2xl border border-slate-200 bg-slate-50 p-4 outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                        aria-label="Topic name"
+                        className="kid-input flex-1 p-4"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
 
                     <button
                         type="submit"
-                        className="rounded-2xl bg-[#58CC02] px-7 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100"
+                        className="kid-button kid-button-green px-7 py-4"
                     >
                         {editingId ? "Update Topic" : "Add Topic"}
                     </button>
@@ -209,7 +210,7 @@ function Topics() {
                 </div>
             </form>
 
-            <div className="overflow-hidden rounded-[1.5rem] border border-green-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="kid-panel overflow-hidden">
                 <div className="border-b border-slate-100 p-6 dark:border-slate-800">
                     <h2 className="text-xl font-bold text-slate-950 dark:text-white">
                         Topic List
@@ -267,8 +268,8 @@ function Topics() {
                                     <span
                                         className={`rounded-full px-3 py-1 text-sm font-bold ${
                                             topic.accessType === "PREMIUM"
-                                                ? "bg-yellow-100 text-yellow-700"
-                                                : "bg-green-50 text-[#58CC02]"
+                                                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-200"
+                                                : "bg-green-50 text-[#58CC02] dark:bg-green-950"
                                         }`}
                                     >
                                         {topic.accessType || "FREE"}
@@ -282,7 +283,7 @@ function Topics() {
                                             onClick={() =>
                                                 handleEdit(topic)
                                             }
-                                            className="rounded-xl bg-sky-50 px-4 py-2 font-bold text-[#1CB0F6] transition-all hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100"
+                                            className="rounded-xl bg-sky-50 px-4 py-2 font-bold text-[#1CB0F6] transition-all hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
                                         >
                                             Edit
                                         </button>
@@ -292,7 +293,7 @@ function Topics() {
                                             onClick={() =>
                                                 handleDelete(topic.id)
                                             }
-                                            className="rounded-xl bg-red-50 px-4 py-2 font-bold text-red-500 transition-all hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-100"
+                                            className="rounded-xl bg-red-50 px-4 py-2 font-bold text-red-500 transition-all hover:bg-red-100 focus:outline-none focus:ring-4 focus:ring-red-100 dark:bg-red-950/40"
                                         >
                                             Delete
                                         </button>

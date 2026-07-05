@@ -122,7 +122,7 @@ function Learn() {
     }
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
+        <div className="app-page space-y-6">
             <PremiumLockedModal
                 open={premiumModalOpen}
                 title="Premium topic locked"
@@ -137,7 +137,7 @@ function Learn() {
             )}
 
             <section className="grid gap-5 xl:grid-cols-[1fr_340px]">
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-7">
+                <div className="kid-panel p-6 md:p-7">
                     <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#58CC02] dark:bg-green-950">
                             <Sparkles className="h-4 w-4" />
                             {isPremium ? "Premium library" : "Flashcard learning"}
@@ -162,7 +162,7 @@ function Learn() {
                     </div>
                 </div>
 
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div className="kid-panel p-6">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-50 text-yellow-600 dark:bg-yellow-950 dark:text-yellow-300">
                         <Crown className="h-6 w-6" />
                     </div>
@@ -228,9 +228,9 @@ function Learn() {
                         return (
                             <article
                                 key={topic.id}
-                                className={`rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 dark:border-slate-800 dark:bg-slate-900 ${
+                                className={`kid-card p-5 ${
                                     hasWords
-                                        ? "hover:-translate-y-0.5 hover:border-green-200 hover:shadow-lg dark:hover:border-green-900"
+                                        ? "dark:hover:border-green-900"
                                         : "opacity-70"
                                 }`}
                             >

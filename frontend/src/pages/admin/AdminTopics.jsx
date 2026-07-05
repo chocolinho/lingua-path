@@ -92,18 +92,18 @@ function AdminTopics() {
     }
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
-            <section className="rounded-[1.75rem] bg-gradient-to-br from-[#1CB0F6] via-[#58CC02] to-[#CE82FF] p-6 text-white shadow-xl shadow-sky-100 dark:shadow-none md:p-8">
+        <div className="app-page space-y-6">
+            <section className="kid-panel-soft p-6 md:p-8">
                 <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-black text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
                             <ShieldCheck className="h-4 w-4" />
                             Content control
                         </div>
-                        <h1 className="text-3xl font-bold md:text-5xl">
+                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                             Topic Management
                         </h1>
-                        <p className="mt-3 max-w-2xl font-medium text-white/90">
+                        <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                             Review public topics and control free or premium access.
                         </p>
                     </div>
@@ -111,7 +111,7 @@ function AdminTopics() {
                     <button
                         type="button"
                         onClick={fetchTopics}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 font-bold text-[#1CB0F6] shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-white/40"
+                        className="kid-button kid-button-blue"
                     >
                         <RefreshCcw className="h-5 w-5" />
                         Refresh
@@ -124,8 +124,8 @@ function AdminTopics() {
                     role="status"
                     className={`rounded-2xl p-4 font-semibold ${
                         errorMessage
-                            ? "bg-red-50 text-red-500"
-                            : "bg-green-50 text-[#58CC02]"
+                            ? "bg-red-50 text-red-500 dark:bg-red-950/40"
+                            : "bg-green-50 text-[#58CC02] dark:bg-green-950/40"
                     }`}
                 >
                     {errorMessage || successMessage}
@@ -159,7 +159,7 @@ function AdminTopics() {
                 />
             </section>
 
-            <section className="rounded-[1.5rem] border border-sky-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <section className="kid-panel p-5">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
@@ -225,7 +225,7 @@ function AdminTopics() {
                                                     {topic.description || "No description"}
                                                 </p>
                                             </td>
-                                            <td className="p-4 font-bold text-slate-600">
+                                            <td className="p-4 font-bold text-slate-600 dark:text-slate-300">
                                                 {topic.ownerUsername || "Platform"}
                                             </td>
                                             <td className="p-4 font-bold text-slate-700 dark:text-slate-200">
@@ -343,7 +343,7 @@ function AdminTopics() {
 
 function AdminTopicStat({ icon, label, value, color }) {
     return (
-        <article className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+        <article className="kid-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 {icon}
             </div>
@@ -367,11 +367,11 @@ function TableHeader({ children, align = "left" }) {
 
 function Badge({ label, tone }) {
     const classes = {
-        green: "bg-green-50 text-[#58CC02]",
-        yellow: "bg-yellow-100 text-yellow-700",
-        red: "bg-red-50 text-red-500",
-        sky: "bg-sky-50 text-[#1CB0F6]",
-        slate: "bg-slate-100 text-slate-500",
+        green: "bg-green-50 text-[#58CC02] dark:bg-green-950/40",
+        yellow: "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/40 dark:text-yellow-200",
+        red: "bg-red-50 text-red-500 dark:bg-red-950/40",
+        sky: "bg-sky-50 text-[#1CB0F6] dark:bg-sky-950/40",
+        slate: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300",
     };
 
     return (

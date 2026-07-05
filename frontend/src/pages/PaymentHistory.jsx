@@ -40,17 +40,17 @@ function PaymentHistory() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="rounded-[1.75rem] bg-gradient-to-br from-[#1CB0F6] via-[#58CC02] to-yellow-300 p-6 text-white shadow-xl shadow-sky-100 dark:shadow-none md:p-8">
+            <section className="kid-panel-soft p-6 md:p-8">
                 <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-black text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
                             <Receipt className="h-4 w-4" />
                             Payment History
                         </div>
-                        <h1 className="text-3xl font-bold md:text-5xl">
+                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                             Your Premium payments
                         </h1>
-                        <p className="mt-3 max-w-2xl font-medium text-white/90">
+                        <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                             Track mock subscription transactions created from the Premium page.
                         </p>
                     </div>
@@ -58,7 +58,7 @@ function PaymentHistory() {
                     <button
                         type="button"
                         onClick={fetchPayments}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 font-bold text-[#1CB0F6] shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-white/40"
+                        className="kid-button kid-button-blue"
                     >
                         <RefreshCcw className="h-5 w-5" />
                         Refresh
@@ -93,7 +93,7 @@ function PaymentHistory() {
                 />
             </section>
 
-            <section className="overflow-hidden rounded-[1.5rem] border border-sky-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <section className="kid-panel overflow-hidden">
                 <div className="border-b border-slate-100 p-5 dark:border-slate-800">
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         Transactions
@@ -162,7 +162,7 @@ function PaymentHistory() {
 
 function PaymentStat({ icon, label, value, color }) {
     return (
-        <article className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+        <article className="kid-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 {icon}
             </div>

@@ -30,15 +30,15 @@ function MyQuizResults() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="rounded-[1.75rem] bg-gradient-to-br from-[#58CC02] via-[#1CB0F6] to-[#CE82FF] p-6 text-white shadow-xl shadow-green-100 dark:shadow-none md:p-8">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-bold">
+            <section className="kid-panel-soft p-6 md:p-8">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-100 px-3 py-1.5 text-sm font-black text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
                     <Trophy className="h-4 w-4" />
                     Quiz history
                 </div>
-                <h1 className="text-3xl font-bold md:text-5xl">
+                <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
                     My Quiz Results
                 </h1>
-                <p className="mt-3 max-w-2xl font-medium text-white/90">
+                <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
                     Review your quiz history and learning progress.
                 </p>
             </section>
@@ -49,7 +49,7 @@ function MyQuizResults() {
                 </div>
             )}
 
-            <div className="overflow-hidden rounded-[1.5rem] border border-green-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="kid-panel overflow-hidden">
                 {results.length === 0 ? (
                     <div className="p-8 text-center">
                         <p className="font-bold text-slate-500 dark:text-slate-400">

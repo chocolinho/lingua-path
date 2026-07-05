@@ -70,8 +70,8 @@ function Analytics() {
     ];
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
-            <section className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-7">
+        <div className="app-page space-y-6">
+            <section className="kid-panel p-6 md:p-7">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div>
                         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#58CC02] dark:bg-green-950">
@@ -212,7 +212,7 @@ function Analytics() {
 
 function MetricCard({ label, value, helper, icon: Icon, color }) {
     return (
-        <article className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+        <article className="kid-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 <Icon className="h-7 w-7" />
             </div>
@@ -225,7 +225,7 @@ function MetricCard({ label, value, helper, icon: Icon, color }) {
 
 function Panel({ title, description, icon, children }) {
     return (
-        <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section className="kid-panel p-5">
             <div className="mb-5 flex items-start gap-3">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1CB0F6] dark:bg-sky-950">
                     {icon}

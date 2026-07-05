@@ -8,6 +8,7 @@ import com.lulu.englishlearningapp.entity.User;
 import com.lulu.englishlearningapp.repository.UserRepository;
 import com.lulu.englishlearningapp.service.QuizService;
 import com.lulu.englishlearningapp.service.VocabularyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class QuizController {
 
     @PostMapping("/submit")
     public QuizSubmitResponse submitQuiz(
-            @RequestBody QuizSubmitRequest request,
+            @Valid @RequestBody QuizSubmitRequest request,
             Authentication authentication
     ) {
         User user = getCurrentUser(authentication);
@@ -66,7 +67,7 @@ public class QuizController {
 
         String email = authentication.getName();
 
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("User not found: " + email));
     }
 }

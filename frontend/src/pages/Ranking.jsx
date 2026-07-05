@@ -41,7 +41,7 @@ function Ranking() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-8">
+            <section className="kid-panel p-6 md:p-8">
                 <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
                         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-black text-[#58CC02] dark:bg-green-950">
@@ -56,7 +56,7 @@ function Ranking() {
                         </p>
                     </div>
 
-                    <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-800 md:min-w-64">
+                    <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950 md:min-w-64">
                         <p className="text-sm font-black text-slate-400">
                             {t("yourRank")}
                         </p>
@@ -88,7 +88,7 @@ function Ranking() {
                         ))}
                     </section>
 
-                    <section className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <section className="kid-panel overflow-hidden">
                         <div className="border-b border-slate-100 p-5 dark:border-slate-800">
                             <h2 className="text-2xl font-black text-slate-950 dark:text-white">
                                 {t("topLearners")}
@@ -116,10 +116,10 @@ function TopRankCard({ item }) {
 
     return (
         <article
-            className={`rounded-[1.5rem] border p-5 shadow-sm ${
+            className={`kid-card p-5 ${
                 item.currentUser
                     ? "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/40"
-                    : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+                    : ""
             }`}
         >
             <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${colors[item.rank]}`}>

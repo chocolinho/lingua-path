@@ -28,6 +28,7 @@ const Ranking = lazy(() => import("./pages/Ranking"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminTopics = lazy(() => import("./pages/admin/AdminTopics"));
 const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
     return (
@@ -71,6 +72,7 @@ function App() {
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/ranking" element={<Ranking />} />
                     </Route>
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </Suspense>
         </BrowserRouter>
