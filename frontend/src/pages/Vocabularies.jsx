@@ -24,6 +24,7 @@ import {
     deleteVocabulary,
     getVocabularyPage,
     getVocabularyProgress,
+    getVocabulariesByTopic,
     searchVocabularies,
     updateVocabulary,
     updateVocabularyProgress,
@@ -50,7 +51,7 @@ const progressOptions = [
     { value: "MASTERED", label: "Mastered" },
 ];
 
-function Vocabularies() {
+function Vocabularies({ adminMode = false }) {
     const { isAdmin, isPremium } = useAuth();
     const editorHeadingRef = useRef(null);
     const [vocabularies, setVocabularies] = useState([]);
@@ -61,6 +62,7 @@ function Vocabularies() {
     const [fieldErrors, setFieldErrors] = useState({});
     const [searchKeyword, setSearchKeyword] = useState("");
     const [activeSearch, setActiveSearch] = useState("");
+    const [selectedTopicFilter, setSelectedTopicFilter] = useState("");
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [editingId, setEditingId] = useState(null);
@@ -87,10 +89,12 @@ function Vocabularies() {
                 getVocabularyPage(page, PAGE_SIZE),
                 getTopics(),
             ]);
-            const [favoriteResult, progressResult] = await Promise.allSettled([
-                getMyFavorites(),
-                getVocabularyProgress(),
-            ]);
+            const [favoriteResult, progressResult] = adminMode
+                ? [
+                    { status: "fulfilled", value: [] },
+                    { status: "fulfilled", value: [] },
+                ]
+                : await Promise.allSettled([getMyFavorites(), getVocabularyProgress()]);
             const favoriteData = favoriteResult.status === "fulfilled" ? favoriteResult.value : [];
             const progressData = progressResult.status === "fulfilled" ? progressResult.value : [];
             const canUseFavorites = favoriteResult.status === "fulfilled";
@@ -117,6 +121,7 @@ function Vocabularies() {
                 )
             );
             setActiveSearch("");
+            setSelectedTopicFilter("");
             if (!canUseFavorites || !canUseProgress) {
                 setSupportWarning("Vocabulary loaded, but favorites or learning status are temporarily unavailable. Retry before changing those items.");
             }
@@ -126,7 +131,7 @@ function Vocabularies() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [adminMode]);
 
     useEffect(() => {
         // The async loader owns the request lifecycle and related UI state.
@@ -158,6 +163,7 @@ function Vocabularies() {
             const data = await searchVocabularies(keyword);
             setVocabularies(Array.isArray(data) ? data : []);
             setActiveSearch(keyword);
+            setSelectedTopicFilter("");
         } catch (error) {
             console.error(error);
             setDataError("We could not complete that search. Try again or clear the search.");
@@ -170,6 +176,31 @@ function Vocabularies() {
         setSearchKeyword("");
         setActiveSearch("");
         await loadWorkspace(0);
+    };
+
+    const handleTopicFilter = async (topicId) => {
+        setSelectedTopicFilter(topicId);
+        setSearchKeyword("");
+        setActiveSearch("");
+
+        if (!topicId) {
+            await loadWorkspace(0);
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setDataError("");
+            const data = await getVocabulariesByTopic(topicId);
+            setVocabularies(Array.isArray(data) ? data : []);
+            setTotalPages(0);
+            setCurrentPage(0);
+        } catch (error) {
+            console.error(error);
+            setDataError("We could not filter vocabulary by topic. Try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const openCreateEditor = () => {
@@ -339,12 +370,12 @@ function Vocabularies() {
 
     return (
         <div className="app-page space-y-6">
-            <PremiumLockedModal
+            {!adminMode && <PremiumLockedModal
                 open={premiumModalOpen}
                 title="Vocabulary limit reached"
                 description="Free learners can create up to 30 custom vocabularies. Premium unlocks unlimited custom vocabulary and export access."
                 onClose={() => setPremiumModalOpen(false)}
-            />
+            />}
             {announcement && (
                 <div className="ui-alert flex items-center gap-3 border-green-200 bg-green-50 text-green-900 dark:border-green-900 dark:bg-green-950/30 dark:text-green-100" role="status" aria-live="polite">
                     <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden="true" />
@@ -359,11 +390,13 @@ function Vocabularies() {
                 <div>
                     <div className="ui-badge mb-4">
                         <BookOpen className="h-4 w-4" aria-hidden="true" />
-                        Vocabulary workspace
+                        {adminMode ? "Content administration" : "Vocabulary workspace"}
                     </div>
-                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Vocabulary</h1>
+                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{adminMode ? "Vocabulary management" : "Vocabulary"}</h1>
                     <p className="mt-2 max-w-2xl text-base leading-7 text-[var(--color-text-muted)]">
-                        Search meanings, hear pronunciation, track learning status, and manage words in topics you own.
+                        {adminMode
+                            ? "Review, search, create, edit, and remove vocabulary using the existing content services."
+                            : "Search meanings, hear pronunciation, track learning status, and manage words in topics you own."}
                     </p>
                 </div>
                 <button
@@ -374,12 +407,12 @@ function Vocabularies() {
                     title={manageableTopics.length ? undefined : "Create or own a topic before adding vocabulary"}
                 >
                     <Plus className="h-5 w-5" aria-hidden="true" />
-                    Add vocabulary
+                    {adminMode ? "Add word" : "Add vocabulary"}
                 </button>
             </header>
 
             <section className="ui-panel p-5" aria-labelledby="vocabulary-search-title">
-                <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                <div className={`grid gap-5 ${adminMode ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : "lg:grid-cols-[minmax(0,1fr)_auto]"} lg:items-end`}>
                     <form onSubmit={handleSearch} className="min-w-0">
                         <label id="vocabulary-search-title" htmlFor="vocabulary-search" className="mb-2 block text-sm font-bold">
                             Search vocabulary
@@ -409,13 +442,21 @@ function Vocabularies() {
                         </div>
                     </form>
 
-                    <div className="flex items-center gap-3 rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3">
+                    {adminMode ? (
+                        <div>
+                            <label htmlFor="admin-vocabulary-topic" className="mb-2 block text-sm font-bold">Filter by topic</label>
+                            <select id="admin-vocabulary-topic" value={selectedTopicFilter} onChange={(event) => handleTopicFilter(event.target.value)} className="ui-input px-4">
+                                <option value="">All topics</option>
+                                {topics.map((topic) => <option key={topic.id} value={topic.id}>{topic.name}</option>)}
+                            </select>
+                        </div>
+                    ) : <div className="flex items-center gap-3 rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3">
                         {isPremium ? <Crown className="h-5 w-5 text-[var(--color-warning)]" aria-hidden="true" /> : <Lock className="h-5 w-5 text-[var(--color-text-muted)]" aria-hidden="true" />}
                         <div>
                             <p className="text-xs font-semibold text-[var(--color-text-muted)]">Creator access</p>
                             <p className="text-sm font-bold">{isPremium ? "Unlimited custom words" : "Up to 30 custom words"}</p>
                         </div>
-                    </div>
+                    </div>}
                 </div>
                 {activeSearch && (
                     <p className="mt-4 text-sm text-[var(--color-text-muted)]">
@@ -476,7 +517,7 @@ function Vocabularies() {
                 </div>
             )}
 
-            {supportWarning && (
+            {!adminMode && supportWarning && (
                 <div className="ui-alert flex flex-col gap-3 border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100 sm:flex-row sm:items-center sm:justify-between" role="status">
                     <span>{supportWarning}</span>
                     <button type="button" onClick={() => loadWorkspace(currentPage)} className="ui-button shrink-0 border border-amber-400 bg-white text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100">
@@ -523,6 +564,7 @@ function Vocabularies() {
                                     isFavorite={isFavorite}
                                     progressStatus={progressStatus}
                                     busy={busy}
+                                    adminMode={adminMode}
                                     favoritesAvailable={favoritesAvailable}
                                     progressAvailable={progressAvailable}
                                     onSpeak={speak}
@@ -536,7 +578,7 @@ function Vocabularies() {
                     </div>
                 )}
 
-                {!loading && !activeSearch && totalPages > 1 && (
+                {!loading && !activeSearch && !selectedTopicFilter && totalPages > 1 && (
                     <nav className="mt-6 flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 sm:flex-row sm:items-center sm:justify-between" aria-label="Vocabulary pagination">
                         <button type="button" onClick={() => loadWorkspace(currentPage - 1)} disabled={currentPage === 0 || loading} className="ui-button ui-button-outline">
                             <ChevronLeft className="h-5 w-5" aria-hidden="true" /> Previous
@@ -566,7 +608,7 @@ function FormField({ label, name, value, onChange, error, helper, autoComplete }
     );
 }
 
-function VocabularyCard({ vocabulary, canManage, isFavorite, progressStatus, busy, favoritesAvailable, progressAvailable, onSpeak, onToggleFavorite, onProgressChange, onEdit, onDelete }) {
+function VocabularyCard({ vocabulary, canManage, isFavorite, progressStatus, busy, adminMode, favoritesAvailable, progressAvailable, onSpeak, onToggleFavorite, onProgressChange, onEdit, onDelete }) {
     return (
         <article className="ui-card p-5 sm:p-6">
             <div className="flex items-start justify-between gap-4">
@@ -579,9 +621,9 @@ function VocabularyCard({ vocabulary, canManage, isFavorite, progressStatus, bus
                     <button type="button" onClick={() => onSpeak(vocabulary.word)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--color-border)] text-[var(--color-secondary)] hover:bg-[var(--color-secondary-soft)]" aria-label={`Pronounce ${vocabulary.word}`}>
                         <Volume2 className="h-5 w-5" aria-hidden="true" />
                     </button>
-                    <button type="button" onClick={() => onToggleFavorite(vocabulary)} disabled={busy || !favoritesAvailable} className={`flex h-11 w-11 items-center justify-center rounded-xl border transition-colors ${isFavorite ? "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300" : "border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/30"}`} aria-label={favoritesAvailable ? (isFavorite ? `Remove ${vocabulary.word} from favorites` : `Add ${vocabulary.word} to favorites`) : "Favorites temporarily unavailable"} aria-pressed={isFavorite}>
+                    {!adminMode && <button type="button" onClick={() => onToggleFavorite(vocabulary)} disabled={busy || !favoritesAvailable} className={`flex h-11 w-11 items-center justify-center rounded-xl border transition-colors ${isFavorite ? "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300" : "border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/30"}`} aria-label={favoritesAvailable ? (isFavorite ? `Remove ${vocabulary.word} from favorites` : `Add ${vocabulary.word} to favorites`) : "Favorites temporarily unavailable"} aria-pressed={isFavorite}>
                         <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} aria-hidden="true" />
-                    </button>
+                    </button>}
                 </div>
             </div>
 
@@ -591,7 +633,7 @@ function VocabularyCard({ vocabulary, canManage, isFavorite, progressStatus, bus
             </div>
 
             <div className="mt-5 flex flex-col gap-4 border-t border-[var(--color-border)] pt-5 sm:flex-row sm:items-end sm:justify-between">
-                <div className="sm:max-w-52">
+                {!adminMode && <div className="sm:max-w-52">
                     <label htmlFor={`progress-${vocabulary.id}`} className="mb-2 block text-sm font-bold">Learning status</label>
                     <div className="relative">
                         {progressStatus === "MASTERED" ? <CheckCircle2 className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--color-success)]" aria-hidden="true" /> : <CircleDot className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--color-primary)]" aria-hidden="true" />}
@@ -599,7 +641,7 @@ function VocabularyCard({ vocabulary, canManage, isFavorite, progressStatus, bus
                             {progressOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                         </select>
                     </div>
-                </div>
+                </div>}
 
                 {canManage && (
                     <div className="flex gap-2">

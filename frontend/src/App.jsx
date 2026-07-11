@@ -27,7 +27,6 @@ const Analytics = lazy(() => import("./pages/Analytics"));
 const Ranking = lazy(() => import("./pages/Ranking"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminTopics = lazy(() => import("./pages/admin/AdminTopics"));
-const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
@@ -47,7 +46,7 @@ function App() {
                     >
                         <Route path="/admin/dashboard" element={<AdminDashboard />} />
                         <Route path="/admin/topics" element={<AdminTopics />} />
-                        <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                        <Route path="/admin/vocabularies" element={<Vocabularies adminMode />} />
                     </Route>
                     <Route
                         element={
