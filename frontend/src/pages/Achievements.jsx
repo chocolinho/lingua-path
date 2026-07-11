@@ -44,21 +44,21 @@ function Achievements() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="kid-panel-soft p-6 md:p-8">
+            <section className="ui-panel-accent p-6 md:p-8">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-100 px-3 py-1.5 text-sm font-black text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-100 px-3 py-1.5 text-sm font-bold text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
                             <Trophy className="h-4 w-4" />
                             Badge collection
                         </div>
-                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">Achievements</h1>
+                        <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">Achievements</h1>
                         <p className="mt-3 font-semibold text-slate-600 dark:text-slate-300">
                             {unlockedCount} / {achievements.length} badges unlocked.
                         </p>
                     </div>
                     <div className="rounded-2xl border-2 border-yellow-100 bg-white px-5 py-4 text-center dark:border-slate-800 dark:bg-slate-900">
-                        <p className="text-4xl font-black text-slate-950 dark:text-white">{unlockedCount}</p>
-                        <p className="text-xs font-black uppercase text-slate-400">
+                        <p className="text-4xl font-bold text-slate-950 dark:text-white">{unlockedCount}</p>
+                        <p className="text-xs font-bold uppercase text-slate-400">
                             earned
                         </p>
                     </div>
@@ -80,9 +80,9 @@ function Achievements() {
                     return (
                         <article
                             key={achievement.code}
-                            className={`rounded-[1.5rem] border p-5 shadow-sm transition-all ${
+                            className={`rounded-2xl border p-5 shadow-sm transition-all ${
                                 achievement.unlocked
-                                    ? "kid-card border-yellow-100 bg-white dark:border-slate-800 dark:bg-slate-900"
+                                    ? "ui-card border-yellow-100 bg-white dark:border-slate-800 dark:bg-slate-900"
                                     : "border-slate-200 bg-slate-50 opacity-80 dark:border-slate-800 dark:bg-slate-900"
                             }`}
                         >
@@ -103,7 +103,7 @@ function Achievements() {
                             </p>
                             <p className={`mt-4 text-xs font-bold uppercase ${
                                 achievement.unlocked
-                                    ? "text-[#58CC02]"
+                                    ? "text-[#0F766E]"
                                     : "text-slate-400"
                             }`}>
                                 {achievement.unlocked ? "Unlocked" : "Locked"}

@@ -1,9 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+    ArrowLeft,
     CheckCircle2,
     ChevronRight,
     Crown,
+    History,
+    LoaderCircle,
     Lock,
+    RefreshCw,
     RotateCcw,
     Sparkles,
     Star,
@@ -11,6 +15,7 @@ import {
     Trophy,
     XCircle,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { getVocabularies } from "../services/vocabularyService";
 import { getTopics } from "../services/topicService";
 import { getQuizQuestionsByTopic, submitQuizResult } from "../services/quizService";
@@ -18,108 +23,127 @@ import { useAuth } from "../context/AuthContext";
 import PageSkeleton from "../components/PageSkeleton";
 import PremiumLockedModal from "../components/PremiumLockedModal";
 
+const QUIZ_LENGTH_OPTIONS = [5, 10, 20, 30];
+const OPTION_LABELS = ["A", "B", "C", "D"];
+
+function shuffleArray(items) {
+    const next = [...items];
+    for (let index = next.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [next[index], next[randomIndex]] = [next[randomIndex], next[index]];
+    }
+    return next;
+}
+
+function uniqueVocabulariesByMeaning(vocabularies) {
+    const unique = new Map();
+    vocabularies.forEach((item) => {
+        if (!item.word || !item.meaning) return;
+        const meaning = item.meaning.trim().toLowerCase();
+        if (!unique.has(meaning)) unique.set(meaning, item);
+    });
+    return Array.from(unique.values());
+}
+
+function generateOptions(correctVocabulary, allVocabularies) {
+    const wrongOptions = shuffleArray(
+        allVocabularies.filter(
+            (item) =>
+                item.id !== correctVocabulary.id &&
+                item.meaning?.trim().toLowerCase() !== correctVocabulary.meaning?.trim().toLowerCase()
+        )
+    )
+        .slice(0, 3)
+        .map((item) => ({ id: `wrong-${item.id}`, text: item.meaning, isCorrect: false }));
+
+    return shuffleArray([
+        { id: `correct-${correctVocabulary.id}`, text: correctVocabulary.meaning, isCorrect: true },
+        ...wrongOptions,
+    ]);
+}
+
 function QuizPractice() {
     const { fetchCurrentUser, isPremium } = useAuth();
+    const questionHeadingRef = useRef(null);
+    const [topics, setTopics] = useState([]);
+    const [selectedTopicId, setSelectedTopicId] = useState("");
+    const [questionLimit, setQuestionLimit] = useState(5);
     const [questions, setQuestions] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [result, setResult] = useState(null);
-    const [topics, setTopics] = useState([]);
-    const [selectedTopicId, setSelectedTopicId] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loadingTopics, setLoadingTopics] = useState(true);
+    const [loadingQuestions, setLoadingQuestions] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [questionLimit, setQuestionLimit] = useState(5);
     const [premiumModalOpen, setPremiumModalOpen] = useState(false);
 
-    const quizLengthOptions = [5, 10, 20, 30];
-
-    const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
-
-    const getUniqueVocabulariesByMeaning = (vocabularies) => {
-        const map = new Map();
-
-        vocabularies.forEach((item) => {
-            if (!item.word || !item.meaning) return;
-
-            const meaningKey = item.meaning.trim().toLowerCase();
-
-            if (!map.has(meaningKey)) {
-                map.set(meaningKey, item);
-            }
-        });
-
-        return Array.from(map.values());
-    };
-
-    const generateOptions = (correctVocabulary, allVocabularies) => {
-        const wrongOptions = shuffleArray(
-            allVocabularies.filter(
-                (item) =>
-                    item.id !== correctVocabulary.id &&
-                    item.meaning?.trim().toLowerCase() !==
-                        correctVocabulary.meaning?.trim().toLowerCase()
-            )
-        )
-            .slice(0, 3)
-            .map((item, index) => ({
-                id: `wrong-${item.id}-${index}`,
-                text: item.meaning,
-                isCorrect: false,
-            }));
-
-        return shuffleArray([
-            {
-                id: `correct-${correctVocabulary.id}`,
-                text: correctVocabulary.meaning,
-                isCorrect: true,
-            },
-            ...wrongOptions,
-        ]);
-    };
-
-    const loadQuestions = async () => {
+    const loadTopics = useCallback(async () => {
         try {
-            setLoading(true);
+            setLoadingTopics(true);
             setErrorMessage("");
-            setResult(null);
+            const data = await getTopics();
+            setTopics(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error(error);
+            setErrorMessage("We could not load quiz topics. Check your connection and try again.");
+        } finally {
+            setLoadingTopics(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        // The async loader owns the request lifecycle and related UI state.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        loadTopics();
+    }, [loadTopics]);
+
+    const selectedTopic = useMemo(
+        () => topics.find((topic) => String(topic.id) === String(selectedTopicId)),
+        [selectedTopicId, topics]
+    );
+    const currentQuestion = questions[currentIndex];
+    const progress = questions.length
+        ? Math.round(((currentIndex + 1) / questions.length) * 100)
+        : 0;
+
+    const resetQuizState = () => {
+        setQuestions([]);
+        setCurrentIndex(0);
+        setSelectedOption(null);
+        setAnswers([]);
+        setResult(null);
+        setErrorMessage("");
+    };
+
+    const startQuiz = async () => {
+        try {
+            setLoadingQuestions(true);
+            setErrorMessage("");
+            setQuestions([]);
             setAnswers([]);
             setSelectedOption(null);
+            setResult(null);
             setCurrentIndex(0);
 
-            const effectiveQuestionLimit = isPremium
-                ? Number(questionLimit)
-                : 5;
-
-            const [topicData, vocabularyData] = await Promise.all([
-                getTopics(),
-                selectedTopicId
-                    ? getQuizQuestionsByTopic(
-                        selectedTopicId,
-                        effectiveQuestionLimit
-                    )
-                    : getVocabularies(),
-            ]);
-
-            setTopics(topicData);
-            const vocabularies = vocabularyData;
-            const cleanVocabularies =
-                getUniqueVocabulariesByMeaning(vocabularies);
+            const effectiveLimit = isPremium ? Number(questionLimit) : 5;
+            const vocabularyData = selectedTopicId
+                ? await getQuizQuestionsByTopic(selectedTopicId, effectiveLimit)
+                : await getVocabularies();
+            const cleanVocabularies = uniqueVocabulariesByMeaning(
+                Array.isArray(vocabularyData) ? vocabularyData : []
+            );
 
             if (cleanVocabularies.length < 4) {
-                setQuestions([]);
-                setErrorMessage(
-                    "You need at least 4 vocabulary words with different meanings to start a quiz."
-                );
+                setErrorMessage("This selection needs at least four vocabulary words with different meanings before a quiz can start.");
                 return;
             }
 
             const selectedVocabularies = shuffleArray(cleanVocabularies).slice(
                 0,
-                Math.min(effectiveQuestionLimit, cleanVocabularies.length)
+                Math.min(effectiveLimit, cleanVocabularies.length)
             );
-
             setQuestions(
                 selectedVocabularies.map((vocabulary) => ({
                     id: vocabulary.id,
@@ -128,46 +152,24 @@ function QuizPractice() {
                     options: generateOptions(vocabulary, cleanVocabularies),
                 }))
             );
+            window.requestAnimationFrame(() => questionHeadingRef.current?.focus());
         } catch (error) {
             console.error(error);
-            setErrorMessage(
-                error.response?.data?.message || "Failed to load quiz questions."
-            );
+            if (error.response?.status === 403) setPremiumModalOpen(true);
+            setErrorMessage(error.response?.data?.message || "We could not prepare this quiz. Try another topic or try again.");
         } finally {
-            setLoading(false);
+            setLoadingQuestions(false);
         }
     };
 
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        loadQuestions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const currentQuestion = questions[currentIndex];
-
-    const progress = useMemo(
-        () =>
-            questions.length > 0
-                ? Math.round(((currentIndex + 1) / questions.length) * 100)
-                : 0,
-        [currentIndex, questions.length]
-    );
-
     const submitAnswers = async (finalAnswers) => {
         const totalQuestions = questions.length;
-        const correctAnswers = finalAnswers.filter(
-            (answer) => answer.isCorrect
-        ).length;
-        const fallbackScore =
-            totalQuestions === 0
-                ? 0
-                : Math.round((correctAnswers / totalQuestions) * 100);
+        const correctAnswers = finalAnswers.filter((answer) => answer.isCorrect).length;
+        const fallbackScore = totalQuestions ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
 
         try {
             setSubmitting(true);
             setErrorMessage("");
-
             const response = await submitQuizResult({
                 topicId: selectedTopicId ? Number(selectedTopicId) : null,
                 answers: finalAnswers.map((answer) => ({
@@ -175,19 +177,15 @@ function QuizPractice() {
                     answer: answer.selectedAnswer,
                 })),
             });
-
             setResult(response);
             await fetchCurrentUser();
         } catch (error) {
             console.error("Submit quiz failed:", error);
             if (error.response?.status === 403) {
-                setErrorMessage(
-                    error.response?.data?.message ||
-                        "This quiz length requires Premium."
-                );
+                setErrorMessage(error.response?.data?.message || "This quiz length requires Premium.");
+                setPremiumModalOpen(true);
                 return;
             }
-
             setResult({
                 totalQuestions,
                 correctAnswers,
@@ -199,428 +197,346 @@ function QuizPractice() {
                 nextLevelXp: 100,
                 levelProgress: 0,
             });
-            setErrorMessage(
-                "Quiz completed, but the result could not be saved to backend."
-            );
+            setErrorMessage("Your quiz is complete, but the result could not be saved. Check your connection before leaving this page.");
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleChooseAnswer = (option) => {
+    const chooseAnswer = (option) => {
         if (selectedOption || submitting || result) return;
-
-        const answerData = {
-            questionId: currentQuestion.id,
-            word: currentQuestion.word,
-            selectedAnswer: option.text,
-            correctAnswer: currentQuestion.correctAnswer,
-            isCorrect: option.isCorrect,
-        };
-
         setSelectedOption(option);
-        setAnswers((previous) => [...previous, answerData]);
+        setAnswers((current) => [
+            ...current,
+            {
+                questionId: currentQuestion.id,
+                word: currentQuestion.word,
+                selectedAnswer: option.text,
+                correctAnswer: currentQuestion.correctAnswer,
+                isCorrect: option.isCorrect,
+            },
+        ]);
     };
 
-    const handleContinue = () => {
-        const isLastQuestion = currentIndex === questions.length - 1;
-        const finalAnswers = answers;
-
-        if (isLastQuestion) {
-            submitAnswers(finalAnswers);
+    const continueQuiz = () => {
+        if (currentIndex === questions.length - 1) {
+            submitAnswers(answers);
             return;
         }
-
-        setCurrentIndex((previous) => previous + 1);
+        setCurrentIndex((current) => current + 1);
         setSelectedOption(null);
+        window.requestAnimationFrame(() => questionHeadingRef.current?.focus());
     };
 
-    if (loading) {
-        return <PageSkeleton />;
-    }
+    const exitQuiz = () => {
+        if (answers.length > 0 && !window.confirm("End this quiz? Your current answers will not be saved.")) return;
+        resetQuizState();
+    };
 
-    const renderTopicSelector = () => (
-        <div className="mb-5 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div className="grid gap-4 lg:grid-cols-[1fr_220px_auto] lg:items-end">
-                <div>
-                    <label
-                        htmlFor="quiz-topic"
-                        className="mb-2 block text-sm font-bold text-slate-500 dark:text-slate-400"
-                    >
-                        Quiz Topic
-                    </label>
-                    <select
-                        id="quiz-topic"
-                        value={selectedTopicId}
-                        onChange={(event) =>
-                            setSelectedTopicId(event.target.value)
+    if (loadingTopics) return <PageSkeleton variant="dashboard" />;
+
+    return (
+        <div className="app-page">
+            <PremiumLockedModal
+                open={premiumModalOpen}
+                title="Longer quizzes are Premium"
+                description="Free learners can practice five questions per quiz. Premium unlocks longer quizzes and premium topics."
+                onClose={() => setPremiumModalOpen(false)}
+            />
+
+            {!currentQuestion && !result && (
+                <QuizSetup
+                    topics={topics}
+                    selectedTopicId={selectedTopicId}
+                    onTopicChange={setSelectedTopicId}
+                    questionLimit={questionLimit}
+                    onQuestionLimitChange={(value) => {
+                        if (!isPremium && value > 5) {
+                            setPremiumModalOpen(true);
+                            return;
                         }
-                        className="min-h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 font-semibold outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-                    >
-                        <option value="">All topics</option>
-                        {topics.map((topic) => (
-                            <option
-                                key={topic.id}
-                                value={topic.id}
-                                disabled={
-                                    (topic.vocabularyCount ?? 0) < 4 ||
-                                    topic.locked
-                                }
-                            >
-                                {topic.name} ({topic.vocabularyCount ?? 0} words)
-                                {topic.locked ? " - Premium" : ""}
-                            </option>
-                        ))}
-                    </select>
+                        setQuestionLimit(value);
+                    }}
+                    isPremium={isPremium}
+                    loading={loadingQuestions}
+                    errorMessage={errorMessage}
+                    onStart={startQuiz}
+                    onRetryTopics={loadTopics}
+                    onOpenPremium={() => setPremiumModalOpen(true)}
+                />
+            )}
+
+            {currentQuestion && !result && (
+                <QuizQuestion
+                    question={currentQuestion}
+                    questionIndex={currentIndex}
+                    questionCount={questions.length}
+                    progress={progress}
+                    selectedOption={selectedOption}
+                    submitting={submitting}
+                    topicName={selectedTopic?.name || "All topics"}
+                    questionHeadingRef={questionHeadingRef}
+                    onChoose={chooseAnswer}
+                    onContinue={continueQuiz}
+                    onExit={exitQuiz}
+                />
+            )}
+
+            {result && (
+                <QuizResult
+                    result={result}
+                    answers={answers}
+                    errorMessage={errorMessage}
+                    topicName={selectedTopic?.name || "All topics"}
+                    onRetry={startQuiz}
+                    onChangeSettings={resetQuizState}
+                    loading={loadingQuestions}
+                />
+            )}
+        </div>
+    );
+}
+
+function QuizSetup({ topics, selectedTopicId, onTopicChange, questionLimit, onQuestionLimitChange, isPremium, loading, errorMessage, onStart, onRetryTopics, onOpenPremium }) {
+    return (
+        <div className="mx-auto max-w-5xl space-y-6">
+            <header className="text-center">
+                <div className="ui-badge mx-auto">
+                    <Target className="h-4 w-4" aria-hidden="true" />
+                    Focused practice
+                </div>
+                <h1 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">Quiz practice</h1>
+                <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-[var(--color-text-muted)]">
+                    Choose a topic and session length, then work through one meaning at a time.
+                </p>
+            </header>
+
+            {errorMessage && (
+                <div className="ui-alert flex flex-col gap-3 border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950/30 dark:text-red-100 sm:flex-row sm:items-center sm:justify-between" role="alert">
+                    <span>{errorMessage}</span>
+                    {topics.length === 0 && (
+                        <button type="button" onClick={onRetryTopics} className="ui-button shrink-0 border border-red-300 bg-white text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-100">
+                            <RefreshCw className="h-4 w-4" aria-hidden="true" /> Retry
+                        </button>
+                    )}
+                </div>
+            )}
+
+            {!errorMessage && topics.length === 0 && (
+                <div className="ui-alert flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" role="status">
+                    <span>No quiz topics are available yet. Add vocabulary before starting a practice session.</span>
+                    <Link to="/vocabularies" className="ui-button ui-button-outline shrink-0">
+                        Open vocabulary
+                    </Link>
+                </div>
+            )}
+
+            <section className="ui-panel overflow-hidden" aria-labelledby="quiz-settings-title">
+                <div className="border-b border-[var(--color-border)] p-5 sm:p-6">
+                    <h2 id="quiz-settings-title" className="text-2xl font-bold">Set up your session</h2>
+                    <p className="mt-1 text-[var(--color-text-muted)]">Topics need at least four available words with different meanings.</p>
+                </div>
+                <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-2">
+                    <div>
+                        <label htmlFor="quiz-topic" className="mb-2 block text-sm font-bold">Topic</label>
+                        <select id="quiz-topic" value={selectedTopicId} onChange={(event) => onTopicChange(event.target.value)} className="ui-input px-4">
+                            <option value="">All available topics</option>
+                            {topics.map((topic) => (
+                                <option key={topic.id} value={topic.id} disabled={(topic.vocabularyCount ?? 0) < 4 || topic.locked}>
+                                    {topic.name} ({topic.vocabularyCount ?? 0} words){topic.locked ? " — Premium" : ""}
+                                </option>
+                            ))}
+                        </select>
+                        <p className="mt-2 text-sm text-[var(--color-text-muted)]">Locked or undersized topics remain unavailable.</p>
+                    </div>
+
+                    <fieldset>
+                        <legend className="mb-2 text-sm font-bold">Number of questions</legend>
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+                            {QUIZ_LENGTH_OPTIONS.map((option) => {
+                                const locked = !isPremium && option > 5;
+                                const selected = questionLimit === option;
+                                return (
+                                    <button
+                                        key={option}
+                                        type="button"
+                                        onClick={() => onQuestionLimitChange(option)}
+                                        className={`relative min-h-14 rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${selected ? "border-[var(--color-primary)] bg-[var(--color-primary-soft)] text-[var(--color-primary-hover)]" : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface-subtle)]"}`}
+                                        aria-pressed={selected}
+                                    >
+                                        {option}
+                                        <span className="block text-xs font-semibold text-[var(--color-text-muted)]">questions</span>
+                                        {locked && <Lock className="absolute right-2 top-2 h-3.5 w-3.5 text-[var(--color-warning)]" aria-label="Premium" />}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </fieldset>
                 </div>
 
-                <div>
-                    <label
-                        htmlFor="quiz-length"
-                        className="mb-2 block text-sm font-bold text-slate-500 dark:text-slate-400"
-                    >
-                        Quiz Length
-                    </label>
-                    <select
-                        id="quiz-length"
-                        value={questionLimit}
-                        onChange={(event) => {
-                            const nextValue = Number(event.target.value);
-
-                            if (!isPremium && nextValue > 5) {
-                                setPremiumModalOpen(true);
-                                return;
-                            }
-
-                            setQuestionLimit(nextValue);
-                        }}
-                        className="min-h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 font-semibold outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-                    >
-                        {quizLengthOptions.map((option) => (
-                            <option
-                                key={option}
-                                value={option}
-                                disabled={!isPremium && option > 5}
-                            >
-                                {option} questions
-                                {!isPremium && option > 5 ? " - Premium" : ""}
-                            </option>
-                        ))}
-                    </select>
+                <div className="flex flex-col gap-4 border-t border-[var(--color-border)] bg-[var(--color-surface-subtle)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                    <div className="flex items-center gap-3">
+                        {isPremium ? <Crown className="h-5 w-5 text-[var(--color-warning)]" aria-hidden="true" /> : <Lock className="h-5 w-5 text-[var(--color-text-muted)]" aria-hidden="true" />}
+                        <p className="text-sm"><span className="font-bold">{isPremium ? "Premium access" : "Free session"}</span><span className="text-[var(--color-text-muted)]"> · {isPremium ? "Choose any available length" : "Five questions per quiz"}</span></p>
+                    </div>
+                    <button type="button" onClick={onStart} disabled={loading || topics.length === 0} className="ui-button ui-button-primary min-w-40">
+                        {loading ? <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" /> : <Target className="h-5 w-5" aria-hidden="true" />}
+                        {loading ? "Preparing" : "Start quiz"}
+                    </button>
                 </div>
-
-                <button
-                    type="button"
-                    onClick={loadQuestions}
-                    className="rounded-2xl bg-[#1CB0F6] px-5 py-3 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-sky-100"
-                >
-                    Load Quiz
-                </button>
-            </div>
+            </section>
 
             {!isPremium && (
-                <button
-                    type="button"
-                    onClick={() => setPremiumModalOpen(true)}
-                    className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-yellow-100 px-4 py-3 text-sm font-bold text-yellow-700 transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-yellow-100"
-                >
-                    <Lock className="h-4 w-4" />
-                    Unlock 10, 20, 30-question quizzes
+                <button type="button" onClick={onOpenPremium} className="mx-auto flex min-h-11 items-center gap-2 rounded-xl px-4 text-sm font-bold text-[var(--color-warning)] hover:bg-amber-50 dark:hover:bg-amber-950/30">
+                    <Crown className="h-4 w-4" aria-hidden="true" /> Explore longer practice sessions
                 </button>
             )}
         </div>
     );
+}
 
-    if (!currentQuestion) {
-        return (
-            <div className="mx-auto max-w-3xl">
-                <PremiumLockedModal
-                    open={premiumModalOpen}
-                    title="Longer quizzes are Premium"
-                    description="Free learners can practice 5 questions per quiz. Premium unlocks longer quizzes and advanced learning tools."
-                    onClose={() => setPremiumModalOpen(false)}
-                />
-                {renderTopicSelector()}
-                <div className="rounded-[2rem] border border-yellow-100 bg-yellow-50 p-8 text-center dark:border-yellow-900 dark:bg-yellow-950/40">
-                    <Target className="mx-auto mb-4 h-12 w-12 text-yellow-500" />
-                    <h1 className="text-2xl font-black text-slate-900 dark:text-white">
-                        Quiz is not ready yet
-                    </h1>
-                    <p className="mt-3 font-semibold text-slate-500 dark:text-slate-300">
-                        {errorMessage ||
-                            "Choose a topic with at least 4 words to start."}
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
-    if (result) {
-        const levelProgress = Math.min(result.levelProgress || 0, 100);
-        const currentLevelXp = result.currentLevelXp ?? result.totalXp ?? 0;
-        const nextLevelXp = result.nextLevelXp ?? 100;
-
-        return (
-            <div className="mx-auto max-w-4xl">
-                {errorMessage && (
-                    <div className="mb-5 rounded-2xl bg-yellow-50 p-4 font-semibold text-yellow-600 dark:bg-yellow-950/40">
-                        {errorMessage}
-                    </div>
-                )}
-
-                <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div className="bg-slate-50 p-7 text-center dark:bg-slate-950 md:p-10">
-                        <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-white text-[#58CC02] shadow-sm dark:bg-slate-900">
-                            <Trophy size={42} />
-                        </div>
-
-                        <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
-                            Quiz Complete
-                        </h1>
-                        <p className="mt-3 font-medium text-slate-500 dark:text-slate-400">
-                            {result.correctAnswers} of {result.totalQuestions}{" "}
-                            answers correct
-                        </p>
-
-                        <p className="mt-6 text-6xl font-bold text-[#58CC02] md:text-7xl">
-                            {Math.round(result.score || 0)}%
-                        </p>
-
-                        <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                            <div className="rounded-2xl bg-white p-4 dark:bg-slate-900">
-                                <Star className="mx-auto h-6 w-6 text-yellow-500" />
-                                <p className="mt-2 text-2xl font-bold text-yellow-500">
-                                    +{result.earnedXp || 0}
-                                </p>
-                                <p className="text-xs font-bold text-slate-400">
-                                    earned XP
-                                </p>
-                            </div>
-                            <div className="rounded-2xl bg-white p-4 dark:bg-slate-900">
-                                <Sparkles className="mx-auto h-6 w-6 text-[#1CB0F6]" />
-                                <p className="mt-2 text-2xl font-bold text-[#1CB0F6]">
-                                    {result.totalXp || 0}
-                                </p>
-                                <p className="text-xs font-bold text-slate-400">
-                                    total XP
-                                </p>
-                            </div>
-                            <div className="rounded-2xl bg-white p-4 dark:bg-slate-900">
-                                <Trophy className="mx-auto h-6 w-6 text-[#CE82FF]" />
-                                <p className="mt-2 text-2xl font-bold text-[#CE82FF]">
-                                    {result.level || 1}
-                                </p>
-                                <p className="text-xs font-bold text-slate-400">
-                                    current level
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="mx-auto mt-6 max-w-xl rounded-2xl bg-white p-5 text-left dark:bg-slate-900">
-                            <div className="mb-3 flex items-center justify-between">
-                                <p className="font-bold text-slate-700 dark:text-slate-200">
-                                    Level Progress
-                                </p>
-                                <p className="font-bold text-[#58CC02]">
-                                    {levelProgress}%
-                                </p>
-                            </div>
-                            <div className="h-4 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                                <div
-                                    className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
-                                    style={{ width: `${levelProgress}%` }}
-                                />
-                            </div>
-                            <p className="mt-2 text-sm font-semibold text-slate-400">
-                                {currentLevelXp} / {nextLevelXp} XP
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="p-5 md:p-7">
-                        <div className="space-y-3">
-                            {answers.map((answer, index) => (
-                                <div
-                                    key={`${answer.questionId}-${index}`}
-                                    className={`rounded-2xl border p-4 ${
-                                        answer.isCorrect
-                                            ? "border-green-100 bg-green-50 dark:border-green-900 dark:bg-green-950/40"
-                                            : "border-red-100 bg-red-50 dark:border-red-900 dark:bg-red-950/40"
-                                    }`}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        {answer.isCorrect ? (
-                                            <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-[#58CC02]" />
-                                        ) : (
-                                            <XCircle className="mt-1 h-5 w-5 shrink-0 text-red-500" />
-                                        )}
-                                        <div>
-                                            <p className="font-bold text-slate-950 dark:text-white">
-                                                {index + 1}. {answer.word}
-                                            </p>
-                                            <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-300">
-                                                Your answer:{" "}
-                                                <span
-                                                    className={
-                                                        answer.isCorrect
-                                                            ? "font-bold text-[#58CC02]"
-                                                            : "font-bold text-red-500"
-                                                    }
-                                                >
-                                                    {answer.selectedAnswer}
-                                                </span>
-                                            </p>
-                                            {!answer.isCorrect && (
-                                                <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
-                                                    Correct answer:{" "}
-                                                    <span className="font-bold text-[#58CC02]">
-                                                        {answer.correctAnswer}
-                                                    </span>
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <button
-                            type="button"
-                            onClick={loadQuestions}
-                            className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#1CB0F6] px-8 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-sky-100 sm:w-auto"
-                        >
-                            <RotateCcw size={20} />
-                            Try Again
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    const isAnswered = Boolean(selectedOption);
+function QuizQuestion({ question, questionIndex, questionCount, progress, selectedOption, submitting, topicName, questionHeadingRef, onChoose, onContinue, onExit }) {
+    const answered = Boolean(selectedOption);
 
     return (
-        <div className="mx-auto max-w-3xl">
-            <PremiumLockedModal
-                open={premiumModalOpen}
-                title="Longer quizzes are Premium"
-                description="Free learners can practice 5 questions per quiz. Premium unlocks longer quizzes and advanced learning tools."
-                onClose={() => setPremiumModalOpen(false)}
-            />
-
-            {renderTopicSelector()}
-
-            <div className="mb-6">
-                <div className="mb-3 flex items-center justify-between">
-                    <p className="font-bold text-slate-500 dark:text-slate-400">
-                        Question {currentIndex + 1} of {questions.length}
-                    </p>
-                    <p className="font-bold text-[#58CC02]">{progress}%</p>
-                </div>
-
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-500 shadow-sm dark:bg-slate-900 dark:text-slate-300">
-                    {isPremium ? (
-                        <Crown className="h-4 w-4 text-yellow-500" />
-                    ) : (
-                        <Lock className="h-4 w-4 text-slate-400" />
-                    )}
-                    {isPremium ? "Premium quiz length" : "Free quiz: 5 questions"}
-                </div>
-
-                <div
-                    className="h-4 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"
-                    role="progressbar"
-                    aria-label="Quiz progress"
-                    aria-valuenow={progress}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                >
-                    <div
-                        className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
+        <div className="mx-auto max-w-3xl space-y-5">
+            <div className="flex items-center justify-between gap-4">
+                <button type="button" onClick={onExit} className="flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-bold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]">
+                    <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Exit quiz
+                </button>
+                <span className="ui-badge">{topicName}</span>
             </div>
 
-            <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-8">
-                <div className="mb-6 flex items-center justify-between gap-4">
-                    <div>
-                        <p className="text-sm font-bold text-slate-400">
-                            Choose the correct meaning
-                        </p>
-                        <h1 className="mt-2 break-words text-4xl font-bold text-slate-950 dark:text-white md:text-6xl">
-                            {currentQuestion.word}
-                        </h1>
-                    </div>
-                    <div className="hidden h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-green-100 text-[#58CC02] sm:flex">
-                        <Target className="h-8 w-8" />
-                    </div>
+            <section aria-label="Quiz progress">
+                <div className="mb-2 flex items-center justify-between gap-3 text-sm font-bold">
+                    <span>Question {questionIndex + 1} of {questionCount}</span>
+                    <span className="tabular-nums text-[var(--color-primary)]">{progress}%</span>
                 </div>
+                <div className="h-3 overflow-hidden rounded-full bg-[var(--color-surface-subtle)]" role="progressbar" aria-label="Quiz progress" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+                    <div className="h-full rounded-full bg-brand transition-[width] duration-300" style={{ width: `${progress}%` }} />
+                </div>
+            </section>
 
-                <div className="grid gap-3">
-                    {currentQuestion.options.map((option) => {
-                        const isSelected = selectedOption?.id === option.id;
-                        const showCorrect = isAnswered && option.isCorrect;
-                        const showWrong = isSelected && !option.isCorrect;
+            <section className="ui-panel p-5 sm:p-8" aria-labelledby="quiz-question-title">
+                <p className="text-sm font-bold text-[var(--color-text-muted)]">Choose the correct meaning</p>
+                <h1 id="quiz-question-title" ref={questionHeadingRef} tabIndex={-1} className="mt-3 break-words text-4xl font-bold tracking-tight sm:text-5xl">{question.word}</h1>
 
+                <div className="mt-7 grid gap-3" role="group" aria-label={`Answer options for ${question.word}`}>
+                    {question.options.map((option, index) => {
+                        const selected = selectedOption?.id === option.id;
+                        const correct = answered && option.isCorrect;
+                        const wrong = selected && !option.isCorrect;
                         return (
                             <button
                                 key={option.id}
                                 type="button"
-                                onClick={() => handleChooseAnswer(option)}
-                                disabled={isAnswered || submitting}
-                                aria-pressed={isSelected}
-                                className={`flex items-center justify-between gap-3 rounded-2xl border-2 p-5 text-left font-bold transition-all focus:outline-none focus:ring-4 focus:ring-sky-100 ${
-                                    showCorrect
-                                        ? "border-[#58CC02] bg-green-50 text-[#58CC02] dark:bg-green-950/40"
-                                        : showWrong
-                                          ? "border-red-400 bg-red-50 text-red-500 dark:bg-red-950/40"
-                                          : "border-slate-200 bg-slate-50 text-slate-700 hover:-translate-y-0.5 hover:border-[#1CB0F6] hover:bg-blue-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
-                                }`}
+                                onClick={() => onChoose(option)}
+                                disabled={answered || submitting}
+                                aria-pressed={selected}
+                                className={`flex min-h-16 items-center gap-4 rounded-xl border-2 p-4 text-left transition-colors ${correct ? "border-green-700 bg-green-50 text-green-900 dark:border-green-400 dark:bg-green-950/30 dark:text-green-100" : wrong ? "border-red-700 bg-red-50 text-red-900 dark:border-red-400 dark:bg-red-950/30 dark:text-red-100" : "border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-secondary)] hover:bg-[var(--color-secondary-soft)]"}`}
                             >
-                                <span>{option.text}</span>
-                                {showCorrect && (
-                                    <CheckCircle2 className="h-5 w-5 shrink-0" />
-                                )}
-                                {showWrong && (
-                                    <XCircle className="h-5 w-5 shrink-0" />
-                                )}
+                                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${correct ? "border-green-700 bg-green-700 text-white dark:border-green-300 dark:bg-green-300 dark:text-green-950" : wrong ? "border-red-700 bg-red-700 text-white dark:border-red-300 dark:bg-red-300 dark:text-red-950" : "border-[var(--color-border-strong)] bg-[var(--color-surface-subtle)]"}`}>{OPTION_LABELS[index]}</span>
+                                <span className="min-w-0 flex-1 break-words font-semibold">{option.text}</span>
+                                {correct && <CheckCircle2 className="h-5 w-5 shrink-0" aria-label="Correct answer" />}
+                                {wrong && <XCircle className="h-5 w-5 shrink-0" aria-label="Your answer is incorrect" />}
                             </button>
                         );
                     })}
                 </div>
 
-                {isAnswered && (
-                    <div
-                        role="status"
-                        aria-live="polite"
-                        className={`mt-5 rounded-2xl p-4 font-semibold ${
-                            selectedOption.isCorrect
-                                ? "bg-green-50 text-[#58CC02] dark:bg-green-950/40"
-                                : "bg-red-50 text-red-500 dark:bg-red-950/40"
-                        }`}
-                    >
-                        {selectedOption.isCorrect
-                            ? "Correct. Nice work."
-                            : `Not quite. The correct answer is ${currentQuestion.correctAnswer}.`}
+                {answered && (
+                    <div className={`mt-5 flex items-start gap-3 rounded-xl p-4 ${selectedOption.isCorrect ? "bg-green-50 text-green-900 dark:bg-green-950/30 dark:text-green-100" : "bg-red-50 text-red-900 dark:bg-red-950/30 dark:text-red-100"}`} role="status" aria-live="polite">
+                        {selectedOption.isCorrect ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" /> : <XCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />}
+                        <p className="font-semibold">{selectedOption.isCorrect ? "Correct. Keep going." : `Not quite. The correct answer is ${question.correctAnswer}.`}</p>
                     </div>
                 )}
 
-                <button
-                    type="button"
-                    onClick={handleContinue}
-                    disabled={!isAnswered || submitting}
-                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-8 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-                >
-                    {submitting
-                        ? "Saving result..."
-                        : currentIndex === questions.length - 1
-                          ? "Finish Quiz"
-                          : "Continue"}
-                    <ChevronRight className="h-5 w-5" />
-                </button>
-            </div>
+                <div className="mt-6 flex justify-end">
+                    <button type="button" onClick={onContinue} disabled={!answered || submitting} className="ui-button ui-button-primary w-full sm:w-auto sm:min-w-44">
+                        {submitting && <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />}
+                        {submitting ? "Saving result" : questionIndex === questionCount - 1 ? "Finish quiz" : "Continue"}
+                        {!submitting && <ChevronRight className="h-5 w-5" aria-hidden="true" />}
+                    </button>
+                </div>
+            </section>
+        </div>
+    );
+}
+
+function QuizResult({ result, answers, errorMessage, topicName, onRetry, onChangeSettings, loading }) {
+    const score = Math.round(Number(result.score || 0));
+    const levelProgress = Math.min(Math.max(Number(result.levelProgress || 0), 0), 100);
+    const currentLevelXp = result.currentLevelXp ?? result.totalXp ?? 0;
+    const nextLevelXp = result.nextLevelXp ?? 100;
+    const scoreMessage = score >= 80 ? "Strong result" : score >= 60 ? "Good progress" : "Keep practising";
+
+    return (
+        <div className="mx-auto max-w-5xl space-y-6">
+            {errorMessage && <div className="ui-alert border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100" role="alert">{errorMessage}</div>}
+
+            <section className="ui-panel-accent p-6 text-center sm:p-8" aria-labelledby="quiz-result-title">
+                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-[var(--color-primary)] shadow-sm">
+                    <Trophy className="h-8 w-8" aria-hidden="true" />
+                </span>
+                <p className="mt-5 text-sm font-bold text-[var(--color-primary)]">{topicName}</p>
+                <h1 id="quiz-result-title" className="mt-1 text-3xl font-bold sm:text-4xl">{scoreMessage}</h1>
+                <p className="mt-2 text-[var(--color-text-muted)]">You answered {result.correctAnswers} of {result.totalQuestions} questions correctly.</p>
+                <p className="mt-5 text-6xl font-bold tabular-nums text-[var(--color-primary)] sm:text-7xl">{score}%</p>
+
+                <div className="mx-auto mt-7 grid max-w-2xl gap-3 sm:grid-cols-3">
+                    <ResultMetric icon={Star} label="XP earned" value={`+${result.earnedXp || 0}`} />
+                    <ResultMetric icon={Sparkles} label="Total XP" value={result.totalXp || 0} />
+                    <ResultMetric icon={Trophy} label="Level" value={result.level || 1} />
+                </div>
+
+                <div className="mx-auto mt-6 max-w-2xl rounded-xl bg-[var(--color-surface)] p-4 text-left">
+                    <div className="flex items-center justify-between gap-3 text-sm font-bold"><span>Level progress</span><span className="tabular-nums text-[var(--color-primary)]">{levelProgress}%</span></div>
+                    <div className="mt-3 h-3 overflow-hidden rounded-full bg-[var(--color-surface-subtle)]" role="progressbar" aria-label="Level progress" aria-valuenow={levelProgress} aria-valuemin={0} aria-valuemax={100}>
+                        <div className="h-full rounded-full bg-brand transition-[width] duration-300" style={{ width: `${levelProgress}%` }} />
+                    </div>
+                    <p className="mt-2 text-sm text-[var(--color-text-muted)]">{currentLevelXp} / {nextLevelXp} XP</p>
+                </div>
+
+                <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+                    <button type="button" onClick={onRetry} disabled={loading} className="ui-button ui-button-primary">
+                        {loading ? <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" /> : <RotateCcw className="h-5 w-5" aria-hidden="true" />}
+                        {loading ? "Preparing" : "Practice again"}
+                    </button>
+                    <button type="button" onClick={onChangeSettings} className="ui-button ui-button-outline">Change settings</button>
+                    <Link to="/quiz-results" className="ui-button ui-button-outline"><History className="h-5 w-5" aria-hidden="true" /> Quiz history</Link>
+                </div>
+            </section>
+
+            <section className="ui-panel p-5 sm:p-6" aria-labelledby="answer-review-title">
+                <div className="mb-5">
+                    <p className="text-sm font-semibold text-[var(--color-primary)]">Answer review</p>
+                    <h2 id="answer-review-title" className="text-2xl font-bold">Review this session</h2>
+                </div>
+                <ol className="space-y-3">
+                    {answers.map((answer) => (
+                        <li key={answer.questionId} className={`rounded-xl border p-4 ${answer.isCorrect ? "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/30" : "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30"}`}>
+                            <div className="flex items-start gap-3">
+                                {answer.isCorrect ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-700 dark:text-green-300" aria-hidden="true" /> : <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-700 dark:text-red-300" aria-hidden="true" />}
+                                <div className="min-w-0">
+                                    <h3 className="break-words font-bold">{answer.word}</h3>
+                                    <p className="mt-1 break-words text-sm"><span className="text-[var(--color-text-muted)]">Your answer:</span> <span className="font-semibold">{answer.selectedAnswer}</span></p>
+                                    {!answer.isCorrect && <p className="mt-1 break-words text-sm"><span className="text-[var(--color-text-muted)]">Correct answer:</span> <span className="font-semibold">{answer.correctAnswer}</span></p>}
+                                </div>
+                            </div>
+                        </li>
+                    ))}
+                </ol>
+            </section>
+        </div>
+    );
+}
+
+function ResultMetric({ icon: Icon, label, value }) {
+    return (
+        <div className="rounded-xl bg-[var(--color-surface)] p-4">
+            <Icon className="mx-auto h-5 w-5 text-[var(--color-secondary)]" aria-hidden="true" />
+            <p className="mt-2 text-2xl font-bold tabular-nums">{value}</p>
+            <p className="text-xs font-semibold text-[var(--color-text-muted)]">{label}</p>
         </div>
     );
 }

@@ -106,8 +106,8 @@ function ReviewWrongAnswers() {
 
     if (completed) {
         return (
-            <div className="kid-panel mx-auto max-w-3xl p-8 text-center">
-                <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-green-50 text-[#58CC02] dark:bg-green-950">
+            <div className="ui-panel mx-auto max-w-3xl p-8 text-center">
+                <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-green-50 text-[#0F766E] dark:bg-green-950">
                     <CheckCircle2 className="h-11 w-11" />
                 </div>
                 <h1 className="text-4xl font-bold text-slate-950 dark:text-white">
@@ -119,7 +119,7 @@ function ReviewWrongAnswers() {
                 <button
                     type="button"
                     onClick={fetchPracticeItems}
-                    className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-6 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100"
+                    className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-6 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100"
                 >
                     <RotateCcw className="h-5 w-5" />
                     Practice Again
@@ -131,16 +131,16 @@ function ReviewWrongAnswers() {
     if (!currentItem) {
         return (
             <div className="mx-auto max-w-3xl space-y-6">
-                <section className="kid-panel-soft p-6 md:p-8">
-                    <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
+                <section className="ui-panel-accent p-6 md:p-8">
+                    <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
                         Review Practice
                     </h1>
                     <p className="mt-3 font-semibold text-slate-600 dark:text-slate-300">
                         Practice words you answered incorrectly.
                     </p>
                 </section>
-                <div className="kid-panel p-8 text-center">
-                    <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-[#58CC02]" />
+                <div className="ui-panel p-8 text-center">
+                    <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-[#0F766E]" />
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         All clear
                     </h2>
@@ -154,17 +154,17 @@ function ReviewWrongAnswers() {
 
     return (
         <div className="mx-auto max-w-3xl space-y-6">
-            <section className="kid-panel-soft p-6 md:p-8">
+            <section className="ui-panel-accent p-6 md:p-8">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
+                        <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
                             Review Practice
                         </h1>
                         <p className="mt-3 font-semibold text-slate-600 dark:text-slate-300">
                             Fix mistakes by answering again.
                         </p>
                     </div>
-                    <div className="rounded-2xl border-2 border-green-100 bg-white px-5 py-4 font-black text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                    <div className="rounded-2xl border-2 border-green-100 bg-white px-5 py-4 font-bold text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
                         {currentIndex + 1} / {items.length}
                     </div>
                 </div>
@@ -179,7 +179,7 @@ function ReviewWrongAnswers() {
             <div>
                 <div className="mb-3 flex items-center justify-between">
                     <p className="font-bold text-slate-500 dark:text-slate-400">Progress</p>
-                    <p className="font-bold text-[#58CC02]">{progress}%</p>
+                    <p className="font-bold text-[#0F766E]">{progress}%</p>
                 </div>
                 <div
                     className="h-4 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"
@@ -190,7 +190,7 @@ function ReviewWrongAnswers() {
                     aria-valuemax={100}
                 >
                     <div
-                        className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
+                        className="h-full rounded-full bg-[#0F766E] transition-all duration-700"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -198,7 +198,7 @@ function ReviewWrongAnswers() {
 
             <form
                 onSubmit={handleSubmit}
-                className="kid-panel p-6 md:p-8"
+                className="ui-panel p-6 md:p-8"
             >
                 <div className="mb-6 flex items-start justify-between gap-4">
                     <div>
@@ -216,7 +216,7 @@ function ReviewWrongAnswers() {
                     <button
                         type="button"
                         onClick={speak}
-                        className="rounded-2xl bg-sky-50 p-3 text-[#1CB0F6] transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
+                        className="rounded-2xl bg-sky-50 p-3 text-[#4338CA] transition-all  focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
                         aria-label="Pronounce word"
                     >
                         <Volume2 className="h-5 w-5" />
@@ -234,7 +234,7 @@ function ReviewWrongAnswers() {
                     value={answer}
                     onChange={(event) => setAnswer(event.target.value)}
                     disabled={Boolean(feedback)}
-                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 font-semibold outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 disabled:text-slate-400 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 font-semibold outline-none transition-all focus:border-[#0F766E] focus:ring-4 focus:ring-green-100 disabled:text-slate-400 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                     placeholder="Enter meaning"
                     autoComplete="off"
                 />
@@ -245,7 +245,7 @@ function ReviewWrongAnswers() {
                         aria-live="polite"
                         className={`mt-5 rounded-2xl p-4 font-semibold ${
                             feedback.correct
-                                ? "bg-green-50 text-[#58CC02]"
+                                ? "bg-green-50 text-[#0F766E]"
                                 : "bg-red-50 text-red-500"
                         }`}
                     >
@@ -267,7 +267,7 @@ function ReviewWrongAnswers() {
                         <button
                             type="submit"
                             disabled={!answer.trim() || submitting}
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-6 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-6 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <Target className="h-5 w-5" />
                             {submitting ? "Checking..." : "Check Answer"}
@@ -276,7 +276,7 @@ function ReviewWrongAnswers() {
                         <button
                             type="button"
                             onClick={handleNext}
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1CB0F6] px-6 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-sky-100"
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4338CA] px-6 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-sky-100"
                         >
                             {currentIndex === items.length - 1 ? "Finish" : "Next"}
                             <ChevronRight className="h-5 w-5" />

@@ -41,14 +41,14 @@ function Ranking() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="kid-panel p-6 md:p-8">
+            <section className="ui-panel p-6 md:p-8">
                 <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-black text-[#58CC02] dark:bg-green-950">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-bold text-[#0F766E] dark:bg-green-950">
                             <Trophy className="h-4 w-4" />
                             {t("learningLeague")}
                         </div>
-                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
+                        <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
                             {t("leaderboard")}
                         </h1>
                         <p className="mt-3 max-w-2xl font-semibold text-slate-500 dark:text-slate-400">
@@ -57,10 +57,10 @@ function Ranking() {
                     </div>
 
                     <div className="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950 md:min-w-64">
-                        <p className="text-sm font-black text-slate-400">
+                        <p className="text-sm font-bold text-slate-400">
                             {t("yourRank")}
                         </p>
-                        <p className="mt-1 text-4xl font-black text-slate-950 dark:text-white">
+                        <p className="mt-1 text-4xl font-bold text-slate-950 dark:text-white">
                             {currentUserRank ? `#${currentUserRank.rank}` : "-"}
                         </p>
                         <p className="mt-1 font-bold text-slate-500 dark:text-slate-400">
@@ -77,7 +77,7 @@ function Ranking() {
             )}
 
             {ranking.length === 0 ? (
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white p-8 text-center font-black text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+                <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center font-bold text-slate-400 dark:border-slate-800 dark:bg-slate-900">
                     {t("noRanking")}
                 </div>
             ) : (
@@ -88,9 +88,9 @@ function Ranking() {
                         ))}
                     </section>
 
-                    <section className="kid-panel overflow-hidden">
+                    <section className="ui-panel overflow-hidden">
                         <div className="border-b border-slate-100 p-5 dark:border-slate-800">
-                            <h2 className="text-2xl font-black text-slate-950 dark:text-white">
+                            <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                                 {t("topLearners")}
                             </h2>
                         </div>
@@ -116,7 +116,7 @@ function TopRankCard({ item }) {
 
     return (
         <article
-            className={`kid-card p-5 ${
+            className={`ui-card p-5 ${
                 item.currentUser
                     ? "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/40"
                     : ""
@@ -125,16 +125,16 @@ function TopRankCard({ item }) {
             <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${colors[item.rank]}`}>
                 <Medal className="h-6 w-6" />
             </div>
-            <p className="text-sm font-black text-slate-400">#{item.rank}</p>
-            <h2 className="mt-1 truncate text-xl font-black text-slate-950 dark:text-white">
+            <p className="text-sm font-bold text-slate-400">#{item.rank}</p>
+            <h2 className="mt-1 truncate text-xl font-bold text-slate-950 dark:text-white">
                 {item.username}
             </h2>
             <div className="mt-4 flex items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-200">
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-200">
                     <Star className="h-3.5 w-3.5" />
                     Level {item.level}
                 </span>
-                <span className="font-black text-[#58CC02]">{item.xp} XP</span>
+                <span className="font-bold text-[#0F766E]">{item.xp} XP</span>
             </div>
         </article>
     );
@@ -148,11 +148,11 @@ function RankingRow({ item }) {
             }`}
         >
             <div className="flex min-w-0 items-center gap-4">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 font-black text-slate-600 dark:bg-slate-800 dark:text-slate-200">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-200">
                     #{item.rank}
                 </div>
                 <div className="min-w-0">
-                    <p className="truncate font-black text-slate-950 dark:text-white">
+                    <p className="truncate font-bold text-slate-950 dark:text-white">
                         {item.username}
                     </p>
                     <p className="flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400">
@@ -165,7 +165,7 @@ function RankingRow({ item }) {
                 {item.subscriptionType === "PREMIUM" && (
                     <Crown className="h-5 w-5 text-yellow-500" />
                 )}
-                <span className="font-black text-[#58CC02]">{item.xp} XP</span>
+                <span className="font-bold text-[#0F766E]">{item.xp} XP</span>
             </div>
         </div>
     );

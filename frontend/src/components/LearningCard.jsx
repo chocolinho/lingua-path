@@ -1,13 +1,13 @@
 function LearningCard({ icon, title, description, progress, color }) {
     return (
-        <div className="kid-card cursor-pointer p-5">
+        <div className="ui-card cursor-pointer p-5">
             <div
                 className={`mb-4 flex h-16 w-16 items-center justify-center rounded-3xl text-4xl ${color}`}
             >
                 {icon}
             </div>
 
-            <h3 className="text-xl font-black text-slate-900 dark:text-white">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                 {title}
             </h3>
 
@@ -30,7 +30,7 @@ function LearningCard({ icon, title, description, progress, color }) {
                     aria-valuemax={100}
                 >
                     <div
-                        className="h-full rounded-full bg-[#58CC02]"
+                        className="h-full rounded-full bg-[#0F766E]"
                         style={{ width: `${progress}%` }}
                     />
                 </div>

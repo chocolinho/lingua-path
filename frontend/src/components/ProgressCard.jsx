@@ -2,10 +2,10 @@ function ProgressCard({ title, value, target }) {
     const percent = target > 0 ? Math.min(Math.round((value / target) * 100), 100) : 0;
 
     return (
-        <div className="kid-card p-6">
+        <div className="ui-card p-6">
             <div className="mb-4 flex items-center justify-between gap-4">
                 <div>
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                         {title}
                     </h3>
 
@@ -14,8 +14,8 @@ function ProgressCard({ title, value, target }) {
                     </p>
                 </div>
 
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#58CC02]/10">
-                    <span className="text-lg font-black text-[#58CC02]">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#0F766E]/10">
+                    <span className="text-lg font-bold text-[#0F766E]">
                         {percent}%
                     </span>
                 </div>
@@ -30,7 +30,7 @@ function ProgressCard({ title, value, target }) {
                 aria-valuemax={100}
             >
                 <div
-                    className="h-full rounded-full bg-[#58CC02] transition-all duration-500"
+                    className="h-full rounded-full bg-[#0F766E] transition-all duration-500"
                     style={{ width: `${percent}%` }}
                 />
             </div>

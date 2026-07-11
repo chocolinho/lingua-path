@@ -44,7 +44,7 @@ function AdminAnalytics() {
             value: analytics?.totalUsers ?? 0,
             helper: `${analytics?.activeUsers ?? 0} active this week`,
             icon: Users,
-            color: "bg-sky-100 text-[#1CB0F6]",
+            color: "bg-sky-100 text-[#4338CA]",
         },
         {
             label: "Premium Users",
@@ -65,20 +65,20 @@ function AdminAnalytics() {
             value: analytics?.totalTopics ?? 0,
             helper: `${analytics?.pendingTopics ?? 0} pending`,
             icon: BookOpen,
-            color: "bg-green-100 text-[#58CC02]",
+            color: "bg-green-100 text-[#0F766E]",
         },
     ];
 
     return (
         <div className="app-page space-y-6">
-            <section className="kid-panel-soft p-6 md:p-8">
+            <section className="ui-panel-accent p-6 md:p-8">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-black text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-bold text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
                             <BarChart3 className="h-4 w-4" />
                             Platform analytics
                         </div>
-                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
+                        <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
                             Learning platform health.
                         </h1>
                         <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
@@ -86,7 +86,7 @@ function AdminAnalytics() {
                         </p>
                     </div>
 
-                    <div className="rounded-[1.5rem] border-2 border-sky-100 bg-white p-5 lg:min-w-72 dark:border-slate-800 dark:bg-slate-900">
+                    <div className="rounded-2xl border-2 border-sky-100 bg-white p-5 lg:min-w-72 dark:border-slate-800 dark:bg-slate-900">
                         <p className="text-sm font-bold text-slate-500 dark:text-slate-400">
                             Premium Conversion
                         </p>
@@ -95,7 +95,7 @@ function AdminAnalytics() {
                         </p>
                         <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                             <div
-                                className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
+                                className="h-full rounded-full bg-[#0F766E] transition-all duration-700"
                                 style={{ width: `${analytics?.premiumConversionRate ?? 0}%` }}
                             />
                         </div>
@@ -138,7 +138,7 @@ function AdminAnalytics() {
                                             Level {user.level} - {user.subscriptionType}
                                         </p>
                                     </div>
-                                    <p className="shrink-0 text-xl font-bold text-[#58CC02]">
+                                    <p className="shrink-0 text-xl font-bold text-[#0F766E]">
                                         {user.xp ?? 0} XP
                                     </p>
                                 </div>
@@ -184,7 +184,7 @@ function AdminAnalytics() {
                                             {topic.accessType} - {topic.approvalStatus}
                                         </p>
                                     </div>
-                                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#1CB0F6] dark:bg-slate-900">
+                                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#4338CA] dark:bg-slate-900">
                                         {topic.vocabularyCount} words
                                     </span>
                                 </div>
@@ -215,7 +215,7 @@ function AdminAnalytics() {
                                             {payment.providerTransactionId}
                                         </p>
                                     </div>
-                                    <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-[#58CC02] dark:bg-green-950">
+                                    <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-[#0F766E] dark:bg-green-950">
                                         {payment.status}
                                     </span>
                                 </div>
@@ -230,7 +230,7 @@ function AdminAnalytics() {
 
 function MetricCard({ label, value, helper, icon: Icon, color }) {
     return (
-        <article className="kid-card p-5">
+        <article className="ui-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 <Icon className="h-7 w-7" />
             </div>
@@ -243,9 +243,9 @@ function MetricCard({ label, value, helper, icon: Icon, color }) {
 
 function Panel({ title, description, icon, children }) {
     return (
-        <section className="kid-panel p-5">
+        <section className="ui-panel p-5">
             <div className="mb-5 flex items-start gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1CB0F6] dark:bg-sky-950">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#4338CA] dark:bg-sky-950">
                     {icon}
                 </div>
                 <div>

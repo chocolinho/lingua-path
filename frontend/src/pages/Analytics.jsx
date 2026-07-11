@@ -51,14 +51,14 @@ function Analytics() {
             value: analytics?.totalQuizAttempts ?? 0,
             helper: `${analytics?.averageScore ?? 0}% average`,
             icon: Target,
-            color: "bg-sky-100 text-[#1CB0F6]",
+            color: "bg-sky-100 text-[#4338CA]",
         },
         {
             label: "Correct Answers",
             value: analytics?.totalCorrectAnswers ?? 0,
             helper: `${analytics?.totalWrongAnswers ?? 0} wrong answers`,
             icon: CheckCircle2,
-            color: "bg-green-100 text-[#58CC02]",
+            color: "bg-green-100 text-[#0F766E]",
         },
         {
             label: "Favorites",
@@ -71,10 +71,10 @@ function Analytics() {
 
     return (
         <div className="app-page space-y-6">
-            <section className="kid-panel p-6 md:p-7">
+            <section className="ui-panel p-6 md:p-7">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#58CC02] dark:bg-green-950">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#0F766E] dark:bg-green-950">
                             <BarChart3 className="h-4 w-4" />
                             Learning analytics
                         </div>
@@ -86,14 +86,14 @@ function Analytics() {
                         </p>
                     </div>
 
-                    <div className="rounded-[1.25rem] bg-slate-50 p-5 lg:min-w-72 dark:bg-slate-950">
+                    <div className="rounded-xl bg-slate-50 p-5 lg:min-w-72 dark:bg-slate-950">
                         <p className="text-sm font-bold text-slate-400">Level Progress</p>
                         <p className="mt-1 text-5xl font-bold text-slate-950 dark:text-white">
                             {analytics?.levelProgress ?? 0}%
                         </p>
                         <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                             <div
-                                className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
+                                className="h-full rounded-full bg-[#0F766E] transition-all duration-700"
                                 style={{ width: `${analytics?.levelProgress ?? 0}%` }}
                             />
                         </div>
@@ -148,7 +148,7 @@ function Analytics() {
                                             {quiz.correctAnswers}/{quiz.totalQuestions} correct
                                         </p>
                                     </div>
-                                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#1CB0F6] dark:bg-slate-900">
+                                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#4338CA] dark:bg-slate-900">
                                         {quiz.score}%
                                     </span>
                                 </div>
@@ -181,18 +181,18 @@ function Analytics() {
                                             {topic.masteredWords}/{topic.reviewedWords} mastered
                                         </p>
                                     </div>
-                                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#58CC02] dark:bg-slate-900">
+                                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#0F766E] dark:bg-slate-900">
                                         {topic.accuracy}%
                                     </span>
                                 </div>
                                 <div className="h-3 overflow-hidden rounded-full bg-white dark:bg-slate-900">
                                     <div
-                                        className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
+                                        className="h-full rounded-full bg-[#0F766E] transition-all duration-700"
                                         style={{ width: `${topic.accuracy}%` }}
                                     />
                                 </div>
                                 <div className="mt-3 flex items-center gap-4 text-sm font-bold">
-                                    <span className="inline-flex items-center gap-1 text-[#58CC02]">
+                                    <span className="inline-flex items-center gap-1 text-[#0F766E]">
                                         <CheckCircle2 className="h-4 w-4" />
                                         {topic.correctAnswers}
                                     </span>
@@ -212,7 +212,7 @@ function Analytics() {
 
 function MetricCard({ label, value, helper, icon: Icon, color }) {
     return (
-        <article className="kid-card p-5">
+        <article className="ui-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 <Icon className="h-7 w-7" />
             </div>
@@ -225,9 +225,9 @@ function MetricCard({ label, value, helper, icon: Icon, color }) {
 
 function Panel({ title, description, icon, children }) {
     return (
-        <section className="kid-panel p-5">
+        <section className="ui-panel p-5">
             <div className="mb-5 flex items-start gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1CB0F6] dark:bg-sky-950">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#4338CA] dark:bg-sky-950">
                     {icon}
                 </div>
                 <div>

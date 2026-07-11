@@ -163,7 +163,7 @@ function LearnTopic() {
     if (errorMessage) {
         return (
             <div
-                className={`mx-auto max-w-2xl rounded-[1.5rem] border p-8 text-center ${
+                className={`mx-auto max-w-2xl rounded-2xl border p-8 text-center ${
                     premiumLocked
                         ? "border-yellow-100 bg-yellow-50"
                         : "border-red-100 bg-red-50"
@@ -203,7 +203,7 @@ function LearnTopic() {
 
     if (vocabularies.length === 0) {
         return (
-            <div className="mx-auto max-w-2xl rounded-[1.5rem] border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <BookOpen className="mx-auto mb-4 h-12 w-12 text-slate-300" />
                 <h1 className="text-3xl font-bold text-slate-950 dark:text-white">
                     No vocabulary found
@@ -213,7 +213,7 @@ function LearnTopic() {
                 </p>
                 <Link
                     to="/learn"
-                    className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-6 py-3 font-bold text-white focus:outline-none focus:ring-4 focus:ring-green-100"
+                    className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-6 py-3 font-bold text-white focus:outline-none focus:ring-4 focus:ring-green-100"
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Back to Learn
@@ -224,9 +224,9 @@ function LearnTopic() {
 
     if (completed) {
         return (
-            <div className="mx-auto max-w-3xl overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div className="bg-slate-50 p-8 dark:bg-slate-950 md:p-10">
-                    <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-white text-[#58CC02] shadow-sm dark:bg-slate-900">
+                    <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-[#0F766E] shadow-sm dark:bg-slate-900">
                         <CheckCircle2 className="h-11 w-11" />
                     </div>
                     <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
@@ -241,21 +241,21 @@ function LearnTopic() {
                     <button
                         type="button"
                         onClick={handleRestart}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-100 px-5 py-4 font-bold text-slate-700 transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-slate-100 dark:bg-slate-800 dark:text-slate-200"
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-100 px-5 py-4 font-bold text-slate-700 transition-all  focus:outline-none focus:ring-4 focus:ring-slate-100 dark:bg-slate-800 dark:text-slate-200"
                     >
                         <RotateCcw className="h-5 w-5" />
                         Review Again
                     </button>
                     <Link
                         to="/quiz"
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-5 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100"
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-5 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100"
                     >
                         <Sparkles className="h-5 w-5" />
                         Practice Quiz
                     </Link>
                     <Link
                         to="/learn"
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1CB0F6] px-5 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-sky-100"
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4338CA] px-5 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-sky-100"
                     >
                         <BookOpen className="h-5 w-5" />
                         More Topics
@@ -270,7 +270,7 @@ function LearnTopic() {
             <div className="mb-6 flex flex-col gap-4">
                 <Link
                     to="/learn"
-                    className="inline-flex w-fit items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-bold text-slate-600 shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100 dark:bg-slate-900 dark:text-slate-300"
+                    className="inline-flex w-fit items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-bold text-slate-600 shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100 dark:bg-slate-900 dark:text-slate-300"
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Back to Learn
@@ -281,7 +281,7 @@ function LearnTopic() {
                         <p className="font-bold text-slate-500 dark:text-slate-400">
                             Word {currentIndex + 1} of {vocabularies.length}
                         </p>
-                        <p className="font-bold text-[#58CC02]">
+                        <p className="font-bold text-[#0F766E]">
                             {progress}%
                         </p>
                     </div>
@@ -294,7 +294,7 @@ function LearnTopic() {
                         aria-valuemax={100}
                     >
                         <div
-                            className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
+                            className="h-full rounded-full bg-[#0F766E] transition-all duration-700"
                             style={{ width: `${progress}%` }}
                         />
                     </div>
@@ -302,7 +302,7 @@ function LearnTopic() {
             </div>
 
             <div
-                className="relative h-[390px] cursor-pointer rounded-[1.5rem] outline-none focus-visible:ring-4 focus-visible:ring-green-100 sm:h-[440px]"
+                className="relative h-[390px] cursor-pointer rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-green-100 sm:h-[440px]"
                 onClick={() => setIsFlipped((previous) => !previous)}
                 onKeyDown={handleFlipKeyDown}
                 role="button"
@@ -326,10 +326,10 @@ function LearnTopic() {
                     }}
                 >
                     <div
-                        className="absolute inset-0 flex flex-col items-center justify-center rounded-[1.5rem] border border-slate-200 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-10"
+                        className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-10"
                         style={{ backfaceVisibility: "hidden" }}
                     >
-                        <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-bold text-[#58CC02] dark:bg-green-950">
+                        <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-bold text-[#0F766E] dark:bg-green-950">
                             <Sparkles className="h-4 w-4" />
                             {currentProgress?.status || "NEW"} - Tap to flip
                         </div>
@@ -344,7 +344,7 @@ function LearnTopic() {
                                 event.stopPropagation();
                                 handleSpeak();
                             }}
-                            className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-blue-50 px-5 py-3 font-bold text-[#1CB0F6] transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
+                            className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-blue-50 px-5 py-3 font-bold text-[#4338CA] transition-all  focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
                         >
                             <Volume2 className="h-5 w-5" />
                             Pronounce
@@ -356,7 +356,7 @@ function LearnTopic() {
                                 event.stopPropagation();
                                 handleAddFavorite();
                             }}
-                            className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-pink-50 px-5 py-3 font-bold text-pink-500 transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-pink-100 dark:bg-pink-950/40"
+                            className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-pink-50 px-5 py-3 font-bold text-pink-500 transition-all  focus:outline-none focus:ring-4 focus:ring-pink-100 dark:bg-pink-950/40"
                         >
                             <Heart className="h-5 w-5" />
                             Favorite
@@ -370,7 +370,7 @@ function LearnTopic() {
                     </div>
 
                     <div
-                        className="absolute inset-0 flex flex-col items-center justify-center rounded-[1.5rem] border border-green-100 bg-green-50 p-6 text-center shadow-sm dark:border-green-900 dark:bg-green-950/30 md:p-10"
+                        className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-green-100 bg-green-50 p-6 text-center shadow-sm dark:border-green-900 dark:bg-green-950/30 md:p-10"
                         style={{
                             backfaceVisibility: "hidden",
                             transform: "rotateY(180deg)",
@@ -380,7 +380,7 @@ function LearnTopic() {
                             Meaning
                         </p>
 
-                        <h2 className="max-w-full break-words text-3xl font-bold text-[#58CC02] sm:text-4xl md:text-6xl">
+                        <h2 className="max-w-full break-words text-3xl font-bold text-[#0F766E] sm:text-4xl md:text-6xl">
                             {currentVocabulary.meaning}
                         </h2>
 
@@ -401,7 +401,7 @@ function LearnTopic() {
                     type="button"
                     onClick={handlePrevious}
                     disabled={currentIndex === 0}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-4 font-bold text-slate-600 shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:text-slate-300"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-4 font-bold text-slate-600 shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:text-slate-300"
                 >
                     <ChevronLeft className="h-5 w-5" />
                     Previous
@@ -410,7 +410,7 @@ function LearnTopic() {
                 <button
                     type="button"
                     onClick={handleNext}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-5 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-5 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100"
                 >
                     {currentIndex === vocabularies.length - 1
                         ? "Finish"

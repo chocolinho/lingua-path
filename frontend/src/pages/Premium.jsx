@@ -74,14 +74,14 @@ function Premium() {
 
     return (
         <div className="app-page space-y-6">
-            <section className="kid-panel-soft overflow-hidden p-6 md:p-8">
+            <section className="ui-panel-accent overflow-hidden p-6 md:p-8">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-100 px-3 py-1.5 text-sm font-black text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-yellow-100 px-3 py-1.5 text-sm font-bold text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
                             <Crown className="h-4 w-4" />
                             Premium Upgrade
                         </div>
-                        <h1 className="max-w-3xl text-3xl font-black leading-tight text-slate-950 dark:text-white md:text-5xl">
+                        <h1 className="max-w-3xl text-3xl font-bold leading-tight text-slate-950 dark:text-white md:text-5xl">
                             Unlock the stronger learning mode.
                         </h1>
                         <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
@@ -90,11 +90,11 @@ function Premium() {
                         </p>
                     </div>
 
-                    <div className="rounded-[1.5rem] border-2 border-yellow-100 bg-white p-5 lg:min-w-72 dark:border-slate-800 dark:bg-slate-900">
-                        <p className="text-sm font-black text-slate-500 dark:text-slate-400">
+                    <div className="rounded-2xl border-2 border-yellow-100 bg-white p-5 lg:min-w-72 dark:border-slate-800 dark:bg-slate-900">
+                        <p className="text-sm font-bold text-slate-500 dark:text-slate-400">
                             Current Plan
                         </p>
-                        <p className="mt-1 text-3xl font-black text-slate-950 dark:text-white">
+                        <p className="mt-1 text-3xl font-bold text-slate-950 dark:text-white">
                             {isPremium ? "Premium" : "Free"}
                         </p>
                         <p className="mt-2 font-semibold text-slate-600 dark:text-slate-300">
@@ -111,7 +111,7 @@ function Premium() {
                     role="status"
                     className={`flex items-center gap-3 rounded-2xl p-4 font-semibold ${
                         message
-                            ? "bg-green-50 text-[#58CC02]"
+                            ? "bg-green-50 text-[#0F766E]"
                             : "bg-red-50 text-red-500"
                     }`}
                 >
@@ -128,7 +128,7 @@ function Premium() {
                         return (
                             <article
                                 key={feature.title}
-                                className="kid-card p-5"
+                                className="ui-card p-5"
                             >
                                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-100 text-yellow-600">
                                     <Icon className="h-6 w-6" />
@@ -144,7 +144,7 @@ function Premium() {
                     })}
                 </div>
 
-                <aside className="kid-panel p-5">
+                <aside className="ui-panel p-5">
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         Choose Plan
                     </h2>
@@ -171,7 +171,7 @@ function Premium() {
                                                 {plan.name}
                                             </p>
                                             {plan.highlight && (
-                                                <span className="rounded-full bg-[#58CC02] px-3 py-1 text-xs font-bold text-white">
+                                                <span className="rounded-full bg-[#0F766E] px-3 py-1 text-xs font-bold text-white">
                                                     Best
                                                 </span>
                                             )}
@@ -192,7 +192,7 @@ function Premium() {
                         type="button"
                         onClick={handleCheckout}
                         disabled={submitting}
-                        className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-bold text-slate-950 shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-yellow-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-bold text-slate-950 shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-yellow-100 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {submitting ? (
                             <Loader2 className="h-5 w-5 animate-spin" />
@@ -204,7 +204,7 @@ function Premium() {
 
                     <Link
                         to="/payments"
-                        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-sky-50 px-6 py-4 font-bold text-[#1CB0F6] transition-all hover:-translate-y-0.5 hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
+                        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-sky-50 px-6 py-4 font-bold text-[#4338CA] transition-all  hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
                     >
                         <FileText className="h-5 w-5" />
                         View Payment History

@@ -4,7 +4,32 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <meta
+      name="description"
+      content="LinguaPath is a focused English learning platform for vocabulary, practice, quizzes, and progress tracking."
+    />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (() => {
+        const savedTheme = localStorage.getItem("theme");
+        const theme = savedTheme === "light" || savedTheme === "dark"
+          ? savedTheme
+          : window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        document.documentElement.classList.toggle("dark", theme === "dark");
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
+    <title>LinguaPath | English Learning Platform</title>
   </head>
   <body>
     <div id="root"></div>

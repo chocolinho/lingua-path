@@ -40,14 +40,14 @@ function PaymentHistory() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="kid-panel-soft p-6 md:p-8">
+            <section className="ui-panel-accent p-6 md:p-8">
                 <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-black text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-3 py-1.5 text-sm font-bold text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
                             <Receipt className="h-4 w-4" />
                             Payment History
                         </div>
-                        <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
+                        <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
                             Your Premium payments
                         </h1>
                         <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
@@ -58,7 +58,7 @@ function PaymentHistory() {
                     <button
                         type="button"
                         onClick={fetchPayments}
-                        className="kid-button kid-button-blue"
+                        className="ui-button ui-button-secondary"
                     >
                         <RefreshCcw className="h-5 w-5" />
                         Refresh
@@ -77,7 +77,7 @@ function PaymentHistory() {
                     icon={<Receipt className="h-7 w-7" />}
                     label="Transactions"
                     value={payments.length}
-                    color="bg-sky-100 text-[#1CB0F6]"
+                    color="bg-sky-100 text-[#4338CA]"
                 />
                 <PaymentStat
                     icon={<Crown className="h-7 w-7" />}
@@ -89,11 +89,11 @@ function PaymentHistory() {
                     icon={<FileText className="h-7 w-7" />}
                     label="Total Paid"
                     value={`$${totalPaid}`}
-                    color="bg-green-100 text-[#58CC02]"
+                    color="bg-green-100 text-[#0F766E]"
                 />
             </section>
 
-            <section className="kid-panel overflow-hidden">
+            <section className="ui-panel overflow-hidden">
                 <div className="border-b border-slate-100 p-5 dark:border-slate-800">
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         Transactions
@@ -139,7 +139,7 @@ function PaymentHistory() {
                                             ${payment.amount}
                                         </td>
                                         <td className="p-4">
-                                            <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-[#58CC02] dark:bg-green-950">
+                                            <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-[#0F766E] dark:bg-green-950">
                                                 {payment.status}
                                             </span>
                                         </td>
@@ -162,7 +162,7 @@ function PaymentHistory() {
 
 function PaymentStat({ icon, label, value, color }) {
     return (
-        <article className="kid-card p-5">
+        <article className="ui-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 {icon}
             </div>

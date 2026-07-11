@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 
 import { register } from "../services/authService";
+import PreferenceControls from "../components/PreferenceControls";
 
 function Register() {
     const navigate = useNavigate();
@@ -60,20 +61,23 @@ function Register() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-[#F6F8FB] px-4 py-10 dark:bg-slate-950">
+        <div className="relative flex min-h-dvh items-center justify-center bg-[#F8FAFC] px-4 py-10 dark:bg-slate-950">
+            <div className="absolute right-4 top-4">
+                <PreferenceControls compact />
+            </div>
             <div className="w-full max-w-md">
                 <Link
                     to="/"
                     className="mb-8 flex items-center justify-center gap-3"
                 >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-[1.35rem] bg-[#58CC02] text-white shadow-[0_5px_0_#46a302] dark:shadow-none">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#0F766E] text-white shadow-sm dark:shadow-none">
                         <BookOpen className="h-8 w-8" />
                     </div>
 
                     <div>
-                        <h1 className="text-3xl font-black text-slate-900 dark:text-white">
-                            LinguaKid
-                        </h1>
+                        <p className="text-3xl font-bold text-slate-900 dark:text-white">
+                            LinguaPath
+                        </p>
                         <p className="text-sm font-bold text-slate-400">
                             English Learning
                         </p>
@@ -82,12 +86,12 @@ function Register() {
 
                 <form
                     onSubmit={handleRegister}
-                    className="kid-panel p-8"
+                    className="ui-panel p-8"
                 >
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
                             Create Account
-                        </h2>
+                        </h1>
 
                         <p className="mt-2 font-semibold text-slate-500 dark:text-slate-400">
                             Start your English learning journey
@@ -95,20 +99,20 @@ function Register() {
                     </div>
 
                     {errorMessage && (
-                        <div className="mb-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-500 dark:bg-red-950/40">
+                        <div role="alert" className="mb-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-700 dark:bg-red-950/40 dark:text-red-200">
                             {errorMessage}
                         </div>
                     )}
 
                     {successMessage && (
-                        <div className="mb-5 rounded-2xl bg-green-50 px-4 py-3 text-sm font-bold text-[#58CC02] dark:bg-green-950/40">
+                        <div role="status" aria-live="polite" className="mb-5 rounded-2xl bg-teal-50 px-4 py-3 text-sm font-bold text-teal-800 dark:bg-teal-950/40 dark:text-teal-200">
                             {successMessage}
                         </div>
                     )}
 
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="register-name" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
+                            <label htmlFor="register-name" className="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">
                                 Name
                             </label>
 
@@ -120,7 +124,8 @@ function Register() {
                                     id="register-name"
                                     type="text"
                                     placeholder="Enter your name"
-                                    className="kid-input py-4 pl-12 pr-4"
+                                    autoComplete="username"
+                                    className="ui-input py-4 pl-12 pr-4"
                                     value={form.name}
                                     onChange={handleChange}
                                 />
@@ -128,7 +133,7 @@ function Register() {
                         </div>
 
                         <div>
-                            <label htmlFor="register-email" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
+                            <label htmlFor="register-email" className="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">
                                 Email
                             </label>
 
@@ -140,7 +145,8 @@ function Register() {
                                     id="register-email"
                                     type="email"
                                     placeholder="Enter your email"
-                                    className="kid-input py-4 pl-12 pr-4"
+                                    autoComplete="email"
+                                    className="ui-input py-4 pl-12 pr-4"
                                     value={form.email}
                                     onChange={handleChange}
                                 />
@@ -148,7 +154,7 @@ function Register() {
                         </div>
 
                         <div>
-                            <label htmlFor="register-password" className="mb-2 block text-sm font-black text-slate-600 dark:text-slate-300">
+                            <label htmlFor="register-password" className="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">
                                 Password
                             </label>
 
@@ -160,7 +166,8 @@ function Register() {
                                     id="register-password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter your password"
-                                    className="kid-input py-4 pl-12 pr-12"
+                                    autoComplete="new-password"
+                                    className="ui-input py-4 pl-12 pr-12"
                                     value={form.password}
                                     onChange={handleChange}
                                 />
@@ -170,7 +177,7 @@ function Register() {
                                     onClick={() =>
                                         setShowPassword(!showPassword)
                                     }
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                    className="absolute right-1 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-xl text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                                     aria-label={showPassword ? "Hide password" : "Show password"}
                                 >
                                     {showPassword ? (
@@ -186,7 +193,7 @@ function Register() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="kid-button kid-button-green mt-7 w-full py-4 disabled:opacity-60"
+                        className="ui-button ui-button-primary mt-7 w-full py-4 disabled:opacity-60"
                     >
                         {loading ? "Creating account..." : "Register"}
                     </button>
@@ -195,7 +202,7 @@ function Register() {
                         Already have an account?{" "}
                         <Link
                             to="/login"
-                            className="text-[#58CC02] font-black hover:underline"
+                            className="inline-flex min-h-11 min-w-11 items-center justify-center font-bold text-[#0F766E] hover:underline dark:text-teal-300"
                         >
                             Login
                         </Link>

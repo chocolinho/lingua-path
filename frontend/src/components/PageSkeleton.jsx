@@ -7,7 +7,7 @@ function PageSkeleton({ variant = "default" }) {
             aria-label="Loading content"
             aria-live="polite"
         >
-            <div className="kid-panel animate-pulse p-6">
+            <div className="ui-panel animate-pulse p-6">
                 <div className="h-5 w-36 rounded-full bg-slate-100 dark:bg-slate-800" />
                 <div className="mt-5 h-9 w-3/4 rounded-2xl bg-slate-100 dark:bg-slate-800 md:w-1/2" />
                 <div className="mt-4 h-4 w-full max-w-xl rounded-full bg-slate-100 dark:bg-slate-800" />
@@ -18,7 +18,7 @@ function PageSkeleton({ variant = "default" }) {
                 {Array.from({ length: cardCount }).map((_, index) => (
                     <div
                         key={index}
-                        className="kid-card animate-pulse p-5"
+                        className="ui-card animate-pulse p-5"
                     >
                         <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800" />
                         <div className="mt-5 h-4 w-24 rounded-full bg-slate-100 dark:bg-slate-800" />

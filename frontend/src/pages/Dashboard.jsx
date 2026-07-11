@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+    ArrowRight,
     BarChart3,
     BookOpen,
     Brain,
@@ -11,8 +12,9 @@ import {
     GraduationCap,
     LineChart,
     Lock,
-    Medal,
-    PlayCircle,
+    Play,
+    RefreshCw,
+    Sparkles,
     Star,
     Target,
     Trophy,
@@ -37,59 +39,53 @@ function Dashboard() {
         user?.name ||
         user?.fullName ||
         user?.username ||
-        user?.email ||
+        user?.email?.split("@")[0] ||
         "Learner";
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                setLoading(true);
-                setErrorMessage("");
+    const fetchDashboardData = useCallback(async () => {
+        try {
+            setLoading(true);
+            setErrorMessage("");
 
-                const [topicData, vocabularyData, quizResultData] =
-                    await Promise.all([
-                        getTopics(),
-                        getVocabularies(),
-                        getMyQuizResults(),
-                    ]);
+            const [topicData, vocabularyData, quizResultData] = await Promise.all([
+                getTopics(),
+                getVocabularies(),
+                getMyQuizResults(),
+            ]);
 
-                setTopics(topicData);
-                setVocabularies(vocabularyData);
-                setQuizResults(quizResultData);
-            } catch (error) {
-                console.error("Failed to load dashboard data", error);
-                setErrorMessage("Could not load dashboard data right now.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDashboardData();
+            setTopics(Array.isArray(topicData) ? topicData : []);
+            setVocabularies(Array.isArray(vocabularyData) ? vocabularyData : []);
+            setQuizResults(Array.isArray(quizResultData) ? quizResultData : []);
+        } catch (error) {
+            console.error("Failed to load dashboard data", error);
+            setErrorMessage("We could not refresh your learning data. Check your connection and try again.");
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        // The async loader owns the request lifecycle and the related UI state.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchDashboardData();
+    }, [fetchDashboardData]);
 
     const stats = useMemo(() => {
         const quizCount = quizResults.length;
-        const averageScore =
-            quizCount > 0
-                ? quizResults.reduce(
-                    (sum, item) => sum + Number(item.score || 0),
-                    0
-                ) / quizCount
-                : 0;
-        const bestScore =
-            quizCount > 0
-                ? Math.max(...quizResults.map((item) => Number(item.score || 0)))
-                : 0;
+        const scores = quizResults.map((item) => Number(item.score || 0));
+        const averageScore = quizCount
+            ? scores.reduce((sum, score) => sum + score, 0) / quizCount
+            : 0;
 
         return {
             topics: topics.length,
             vocabularies: vocabularies.length,
             quizResults: quizCount,
-            averageScore: averageScore.toFixed(1),
-            bestScore: bestScore.toFixed(1),
+            averageScore,
+            bestScore: quizCount ? Math.max(...scores) : 0,
             xpPoints: user?.xp || 0,
             level: user?.level || 1,
-            levelProgress: Math.min(user?.levelProgress || 0, 100),
+            levelProgress: Math.min(Math.max(user?.levelProgress || 0, 0), 100),
             nextLevelXp: user?.nextLevelXp || 100,
             dailyStreak: user?.dailyStreak || 0,
         };
@@ -103,8 +99,7 @@ function Dashboard() {
                     vocabularyCount:
                         topic.vocabularyCount ??
                         vocabularies.filter(
-                            (vocabulary) =>
-                                Number(vocabulary.topicId) === Number(topic.id)
+                            (vocabulary) => Number(vocabulary.topicId) === Number(topic.id)
                         ).length,
                 }))
                 .filter((topic) => !topic.locked && topic.vocabularyCount > 0)
@@ -112,284 +107,234 @@ function Dashboard() {
         [topics, vocabularies]
     );
 
+    const nextTopic = readyTopics[0];
     const recentResults = quizResults.slice(0, 4);
-    const weeklyGoalPercent = Math.min(
-        Math.round((stats.quizResults / 7) * 100),
-        100
-    );
+    const weeklyTarget = 7;
+    const weeklyCompleted = Math.min(stats.quizResults, weeklyTarget);
+    const weeklyGoalPercent = Math.round((weeklyCompleted / weeklyTarget) * 100);
 
-    if (loading) {
-        return <PageSkeleton variant="dashboard" />;
-    }
+    if (loading) return <PageSkeleton variant="dashboard" />;
 
     return (
         <div className="app-page space-y-6">
             {errorMessage && (
-                <div className="rounded-2xl bg-red-50 p-4 font-semibold text-red-500 dark:bg-red-950/40">
-                    {errorMessage}
+                <div className="ui-alert flex flex-col gap-3 border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950/30 dark:text-red-100 sm:flex-row sm:items-center sm:justify-between" role="alert">
+                    <div>
+                        <p className="font-bold">Dashboard data is unavailable</p>
+                        <p className="mt-1 text-sm">{errorMessage}</p>
+                    </div>
+                    <button type="button" onClick={fetchDashboardData} className="ui-button shrink-0 border border-red-300 bg-white text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-100">
+                        <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                        Try again
+                    </button>
                 </div>
             )}
 
-            <section className="grid gap-5 xl:grid-cols-[1fr_360px]">
-                <div className="kid-panel-soft overflow-hidden p-6 md:p-7">
-                    <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                        <div>
-                            <div className="kid-pill mb-4">
-                                <Flame className="h-4 w-4" />
-                                {stats.dailyStreak} day streak
-                            </div>
-                            <h1 className="max-w-2xl text-3xl font-black tracking-tight text-slate-950 dark:text-white md:text-4xl">
-                                Welcome back, {displayName}
-                            </h1>
-                            <p className="mt-3 max-w-2xl text-base font-semibold leading-7 text-slate-600 dark:text-slate-300">
-                                Keep the session focused: review a topic, take a quiz,
-                                or check your ranking progress.
-                            </p>
+            <section className="grid gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(18rem,0.75fr)]">
+                <div className="ui-panel-accent relative overflow-hidden p-6 sm:p-8">
+                    <div className="relative z-10 max-w-3xl">
+                        <div className="ui-badge">
+                            <Sparkles className="h-4 w-4" aria-hidden="true" />
+                            Personal learning path
                         </div>
+                        <h1 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
+                            Welcome back, {displayName}
+                        </h1>
+                        <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--color-text-muted)] sm:text-lg">
+                            {nextTopic
+                                ? `Continue with ${nextTopic.name} and keep your momentum going.`
+                                : "Choose a topic and start building a learning routine that fits your level."}
+                        </p>
 
-                        <div
-                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-black ${
-                                isPremium
-                                    ? "border-yellow-200 bg-yellow-100 text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200"
-                                    : "border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
-                            }`}
-                        >
-                            <Crown className="h-4 w-4" />
-                            {isPremium ? "Premium" : "Free"}
+                        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                            <Link
+                                to={nextTopic ? `/learn/${nextTopic.id}` : "/learn"}
+                                className="ui-button ui-button-primary"
+                            >
+                                <Play className="h-5 w-5 fill-current" aria-hidden="true" />
+                                {nextTopic ? "Continue learning" : "Start learning"}
+                            </Link>
+                            <Link to="/topics" className="ui-button ui-button-outline">
+                                Browse topics
+                                <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                            </Link>
                         </div>
                     </div>
-
-                    <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                        <ActionLink
-                            to="/learn"
-                            icon={<GraduationCap className="h-5 w-5" />}
-                            title="Start learning"
-                            description="Open lesson library"
-                        />
-                        <ActionLink
-                            to="/quiz"
-                            icon={<Target className="h-5 w-5" />}
-                            title="Practice quiz"
-                            description="Train recall"
-                        />
-                        <ActionLink
-                            to="/ranking"
-                            icon={<Trophy className="h-5 w-5" />}
-                            title="View ranking"
-                            description="Compare XP"
-                        />
-                    </div>
+                    <GraduationCap className="pointer-events-none absolute -bottom-10 -right-8 h-52 w-52 text-[var(--color-primary)] opacity-[0.07]" aria-hidden="true" />
                 </div>
 
-                <div className="kid-panel p-6">
+                <article className="ui-panel p-6">
                     <div className="flex items-start justify-between gap-4">
                         <div>
-                            <p className="text-sm font-bold text-slate-400">
-                                Current level
-                            </p>
-                            <h2 className="mt-1 text-4xl font-bold text-slate-950 dark:text-white">
-                                Level {stats.level}
-                            </h2>
+                            <p className="text-sm font-semibold text-[var(--color-text-muted)]">Level progress</p>
+                            <h2 className="mt-1 text-3xl font-bold">Level {stats.level}</h2>
                         </div>
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-100 text-yellow-600 dark:bg-yellow-950 dark:text-yellow-300">
-                            <Medal className="h-6 w-6" />
-                        </div>
+                        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
+                            <Trophy className="h-6 w-6" aria-hidden="true" />
+                        </span>
                     </div>
-
                     <div
-                        className="mt-6 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"
+                        className="mt-7 h-3 overflow-hidden rounded-full bg-[var(--color-surface-subtle)]"
                         role="progressbar"
                         aria-label="Level progress"
                         aria-valuenow={stats.levelProgress}
                         aria-valuemin={0}
                         aria-valuemax={100}
                     >
-                        <div
-                            className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
-                            style={{ width: `${stats.levelProgress}%` }}
-                        />
+                        <div className="h-full rounded-full bg-brand transition-[width] duration-300" style={{ width: `${stats.levelProgress}%` }} />
                     </div>
-                    <p className="mt-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                        {stats.xpPoints} / {stats.nextLevelXp} XP
-                    </p>
+                    <div className="mt-3 flex items-center justify-between gap-3 text-sm">
+                        <span className="font-bold">{stats.xpPoints} XP</span>
+                        <span className="text-[var(--color-text-muted)]">{stats.nextLevelXp} XP target</span>
+                    </div>
+                    <div className="mt-6 flex items-center gap-3 rounded-xl bg-[var(--color-surface-subtle)] p-3">
+                        <Flame className="h-5 w-5 text-[var(--color-warning)]" aria-hidden="true" />
+                        <p className="text-sm"><span className="font-bold">{stats.dailyStreak} day streak</span><span className="text-[var(--color-text-muted)]"> · Keep showing up</span></p>
+                    </div>
+                </article>
+            </section>
+
+            <section aria-labelledby="overview-title">
+                <div className="mb-3 flex items-end justify-between gap-3">
+                    <div>
+                        <p className="text-sm font-semibold text-[var(--color-primary)]">At a glance</p>
+                        <h2 id="overview-title" className="text-2xl font-bold">Learning overview</h2>
+                    </div>
+                    <Link to="/analytics" className="hidden min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-bold text-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] sm:flex">
+                        Full analytics <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                    </Link>
+                </div>
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                    <MetricCard icon={Star} label="Total XP" value={stats.xpPoints} helper="Experience earned" tone="amber" />
+                    <MetricCard icon={BookOpen} label="Topics" value={stats.topics} helper="Available lessons" tone="teal" />
+                    <MetricCard icon={Brain} label="Vocabulary" value={stats.vocabularies} helper="Words to explore" tone="indigo" />
+                    <MetricCard icon={CheckCircle2} label="Quizzes" value={stats.quizResults} helper="Attempts completed" tone="green" />
                 </div>
             </section>
 
-            <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                <MetricCard
-                    icon={<Star className="h-5 w-5" />}
-                    label="XP"
-                    value={stats.xpPoints}
-                    helper="Total experience"
-                    tone="yellow"
-                />
-                <MetricCard
-                    icon={<BookOpen className="h-5 w-5" />}
-                    label="Topics"
-                    value={stats.topics}
-                    helper="Available lessons"
-                    tone="green"
-                />
-                <MetricCard
-                    icon={<Brain className="h-5 w-5" />}
-                    label="Words"
-                    value={stats.vocabularies}
-                    helper="Vocabulary bank"
-                    tone="blue"
-                />
-                <MetricCard
-                    icon={<CheckCircle2 className="h-5 w-5" />}
-                    label="Quizzes"
-                    value={stats.quizResults}
-                    helper="Completed attempts"
-                    tone="purple"
-                />
-            </section>
-
-            <section className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+            <section className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(19rem,0.65fr)]">
                 <Panel
-                    title="Weekly rhythm"
-                    description="A steady week beats one huge session."
-                    icon={<LineChart className="h-5 w-5" />}
-                    tone="green"
+                    title="Continue learning"
+                    description="Topics that already have vocabulary ready to practise."
+                    icon={GraduationCap}
+                    action={<Link to="/learn" className="text-sm font-bold text-[var(--color-primary)] hover:underline">View all lessons</Link>}
                 >
-                    <div className="flex items-end justify-between gap-4">
-                        <div>
-                            <p className="text-4xl font-bold text-slate-950 dark:text-white">
-                                {stats.quizResults}/7
-                            </p>
-                            <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                                quizzes completed
-                            </p>
-                        </div>
-                        <span className="rounded-full bg-green-50 px-3 py-1 text-sm font-bold text-[#58CC02] dark:bg-green-950">
-                            {weeklyGoalPercent}%
-                        </span>
-                    </div>
-                    <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                        <div
-                            className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
-                            style={{ width: `${weeklyGoalPercent}%` }}
-                        />
-                    </div>
-                </Panel>
-
-                <Panel
-                    title="Quiz performance"
-                    description="Use your score trend to decide what to review next."
-                    icon={<BarChart3 className="h-5 w-5" />}
-                    tone="blue"
-                >
-                    <div className="grid gap-3 sm:grid-cols-2">
-                        <ScoreBlock label="Average score" value={stats.averageScore} />
-                        <ScoreBlock label="Best score" value={stats.bestScore} />
-                    </div>
-                </Panel>
-            </section>
-
-            <section className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-                <Panel
-                    title="Ready lessons"
-                    description="Pulled from real backend topics with vocabulary."
-                    icon={<GraduationCap className="h-5 w-5" />}
-                    tone="green"
-                >
-                    {readyTopics.length === 0 ? (
-                        <EmptyState
-                            title="No lessons ready yet"
-                            description="Add vocabulary to a topic before it appears here."
-                            actionLabel="Manage topics"
-                            to="/topics"
-                        />
-                    ) : (
-                        <div className="grid gap-3 sm:grid-cols-2">
-                            {readyTopics.map((topic) => (
+                    {readyTopics.length ? (
+                        <div className="divide-y divide-[var(--color-border)]">
+                            {readyTopics.map((topic, index) => (
                                 <Link
                                     key={topic.id}
                                     to={`/learn/${topic.id}`}
-                                    className="group rounded-2xl border border-green-100 bg-green-50/70 p-4 transition-all hover:-translate-y-0.5 hover:border-[#58CC02] hover:bg-green-50 focus:outline-none focus:ring-4 focus:ring-green-100 dark:border-green-900 dark:bg-green-950/20 dark:hover:bg-green-950/30"
+                                    className="group flex min-h-20 items-center gap-4 rounded-xl px-2 py-4 transition-colors hover:bg-[var(--color-surface-subtle)] sm:px-3"
                                 >
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <h3 className="truncate font-bold text-slate-950 dark:text-white">
-                                                {topic.name}
-                                            </h3>
-                                            <p className="mt-1 line-clamp-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-                                                {topic.description ||
-                                                    "Practice this vocabulary set."}
-                                            </p>
-                                        </div>
-                                        <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" />
-                                    </div>
-                                    <p className="mt-4 text-sm font-bold text-[#1CB0F6]">
-                                        {topic.vocabularyCount} words
-                                    </p>
+                                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary-soft)] font-bold text-[var(--color-primary-hover)]">
+                                        {String(index + 1).padStart(2, "0")}
+                                    </span>
+                                    <span className="min-w-0 flex-1">
+                                        <span className="block truncate font-bold">{topic.name}</span>
+                                        <span className="mt-1 block truncate text-sm text-[var(--color-text-muted)]">
+                                            {topic.vocabularyCount} words · {topic.description || "Vocabulary practice"}
+                                        </span>
+                                    </span>
+                                    <span className="hidden rounded-full bg-[var(--color-surface-subtle)] px-3 py-1 text-xs font-bold text-[var(--color-text-muted)] sm:inline-flex">
+                                        {index === 0 ? "Up next" : "Ready"}
+                                    </span>
+                                    <ChevronRight className="h-5 w-5 shrink-0 text-[var(--color-text-muted)] transition-colors group-hover:text-[var(--color-primary)]" aria-hidden="true" />
                                 </Link>
                             ))}
                         </div>
+                    ) : (
+                        <EmptyState
+                            icon={BookOpen}
+                            title="Your lesson queue is ready to grow"
+                            description="Browse the topic library to find vocabulary sets for your next session."
+                            actionLabel="Browse topics"
+                            to="/topics"
+                        />
                     )}
                 </Panel>
 
-                <Panel
-                    title="Recent results"
-                    description="Latest quiz attempts from your account."
-                    icon={<Trophy className="h-5 w-5" />}
-                    tone="purple"
-                >
-                    {recentResults.length === 0 ? (
-                        <EmptyState
-                            title="No quiz results yet"
-                            description="Take your first quiz to see score history."
-                            actionLabel="Start quiz"
-                            to="/quiz"
-                        />
-                    ) : (
-                        <div className="space-y-3">
-                            {recentResults.map((result) => (
-                                <div
-                                    key={result.id}
-                                    className="flex items-center justify-between gap-4 rounded-2xl bg-purple-50/70 p-4 dark:bg-purple-950/20"
-                                >
-                                    <div className="min-w-0">
-                                        <p className="font-bold text-slate-950 dark:text-white">
-                                            {result.topicName || "Mixed practice"}
-                                        </p>
-                                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                                            {result.correctAnswers}/{result.totalQuestions} correct
-                                        </p>
-                                    </div>
-                                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#1CB0F6] dark:bg-slate-800">
-                                        {Number(result.score || 0).toFixed(1)}%
-                                    </span>
-                                </div>
-                            ))}
+                <div className="space-y-5">
+                    <Panel title="Weekly target" description="Complete seven quiz sessions." icon={Target} compact>
+                        <div className="flex items-end justify-between gap-3">
+                            <p className="text-4xl font-bold tabular-nums">{weeklyCompleted}<span className="text-xl text-[var(--color-text-muted)]">/{weeklyTarget}</span></p>
+                            <span className="ui-badge">{weeklyGoalPercent}%</span>
                         </div>
-                    )}
-                </Panel>
+                        <div
+                            className="mt-5 h-3 overflow-hidden rounded-full bg-[var(--color-surface-subtle)]"
+                            role="progressbar"
+                            aria-label="Weekly quiz target"
+                            aria-valuenow={weeklyGoalPercent}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                        >
+                            <div className="h-full rounded-full bg-brand transition-[width] duration-300" style={{ width: `${weeklyGoalPercent}%` }} />
+                        </div>
+                        <Link to="/quiz" className="ui-button ui-button-outline mt-5 w-full">Practice now <ChevronRight className="h-4 w-4" aria-hidden="true" /></Link>
+                    </Panel>
+
+                    <Panel title="Quiz performance" description="Your results across all attempts." icon={LineChart} compact>
+                        <div className="grid grid-cols-2 gap-3">
+                            <ScoreBlock label="Average" value={stats.averageScore} />
+                            <ScoreBlock label="Best" value={stats.bestScore} />
+                        </div>
+                    </Panel>
+                </div>
             </section>
 
+            <Panel
+                title="Recent quiz results"
+                description="Your latest attempts and scores."
+                icon={BarChart3}
+                action={<Link to="/quiz-results" className="text-sm font-bold text-[var(--color-primary)] hover:underline">View history</Link>}
+            >
+                {recentResults.length ? (
+                    <div className="grid gap-3 md:grid-cols-2">
+                        {recentResults.map((result) => (
+                            <article key={result.id} className="flex items-center gap-4 rounded-xl border border-[var(--color-border)] p-4">
+                                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-secondary-soft)] text-[var(--color-secondary)]">
+                                    <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                    <h3 className="truncate font-bold">{result.topicName || "Mixed practice"}</h3>
+                                    <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                                        {result.correctAnswers ?? 0}/{result.totalQuestions ?? 0} correct
+                                    </p>
+                                </div>
+                                <span className="text-lg font-bold tabular-nums text-[var(--color-secondary)]">
+                                    {formatScore(result.score)}%
+                                </span>
+                            </article>
+                        ))}
+                    </div>
+                ) : (
+                    <EmptyState
+                        icon={Target}
+                        title="No quiz results yet"
+                        description="Complete a quiz and your score history will appear here."
+                        actionLabel="Take a quiz"
+                        to="/quiz"
+                    />
+                )}
+            </Panel>
+
             {!isPremium && (
-                <section className="rounded-[1.5rem] border border-yellow-200 bg-yellow-50 p-5 dark:border-yellow-900 dark:bg-yellow-950/40">
+                <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900 dark:bg-amber-950/30 sm:p-6">
                     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <div className="flex items-start gap-3">
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-yellow-600 dark:bg-yellow-900 dark:text-yellow-200">
-                                <Lock className="h-5 w-5" />
-                            </div>
+                        <div className="flex items-start gap-4">
+                            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                                <Lock className="h-5 w-5" aria-hidden="true" />
+                            </span>
                             <div>
-                                <h2 className="text-lg font-bold text-slate-950 dark:text-white">
-                                    Unlock longer practice sessions
-                                </h2>
-                                <p className="mt-1 max-w-2xl text-sm font-medium text-slate-600 dark:text-slate-300">
-                                    Premium adds longer quizzes, premium topics, and export tools.
+                                <h2 className="text-lg font-bold">Expand your practice options</h2>
+                                <p className="mt-1 max-w-2xl text-sm leading-6 text-[var(--color-text-muted)]">
+                                    Premium includes longer quizzes, premium topics, and export tools.
                                 </p>
                             </div>
                         </div>
-                        <Link
-                            to="/premium"
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-5 py-3 text-sm font-bold text-slate-950 transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-yellow-100"
-                        >
-                            <Crown className="h-4 w-4" />
-                            View Premium
+                        <Link to="/premium" className="ui-button shrink-0 bg-amber-600 text-white hover:bg-amber-700">
+                            <Crown className="h-4 w-4" aria-hidden="true" />
+                            Explore Premium
                         </Link>
                     </div>
                 </section>
@@ -398,121 +343,75 @@ function Dashboard() {
     );
 }
 
-function ActionLink({ to, icon, title, description }) {
-    return (
-        <Link
-            to={to}
-            className="group rounded-2xl border-2 border-white bg-white p-4 text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-green-200 hover:bg-green-50 focus:outline-none focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-green-950/30 dark:focus:ring-green-900"
-        >
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-green-100 text-[#58CC02] dark:bg-green-950">
-                {icon}
-            </div>
-            <p className="font-black text-slate-950 dark:text-white">{title}</p>
-            <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                {description}
-            </p>
-        </Link>
-    );
-}
+const metricTones = {
+    amber: "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300",
+    teal: "bg-[var(--color-primary-soft)] text-[var(--color-primary-hover)]",
+    indigo: "bg-[var(--color-secondary-soft)] text-[var(--color-secondary)]",
+    green: "bg-green-50 text-green-700 dark:bg-green-950/50 dark:text-green-300",
+};
 
-function MetricCard({ icon, label, value, helper, tone = "blue" }) {
-    const tones = {
-        green: {
-            card: "border-green-100 shadow-green-100",
-            icon: "bg-green-50 text-[#58CC02] dark:bg-green-950",
-        },
-        blue: {
-            card: "border-sky-100 shadow-sky-100",
-            icon: "bg-sky-50 text-[#1CB0F6] dark:bg-sky-950",
-        },
-        purple: {
-            card: "border-purple-100 shadow-purple-100",
-            icon: "bg-purple-50 text-[#CE82FF] dark:bg-purple-950",
-        },
-        yellow: {
-            card: "border-yellow-100 shadow-yellow-100",
-            icon: "bg-yellow-50 text-yellow-500 dark:bg-yellow-950",
-        },
-    };
-    const selectedTone = tones[tone] || tones.blue;
-
+function MetricCard({ icon: Icon, label, value, helper, tone }) {
     return (
-        <article className={`rounded-[1.5rem] border bg-white p-4 shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:shadow-none ${selectedTone.card}`}>
-            <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-2xl ${selectedTone.icon}`}>
-                {icon}
+        <article className="ui-card p-4 sm:p-5">
+            <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl ${metricTones[tone]}`}>
+                <Icon className="h-5 w-5" aria-hidden="true" />
             </div>
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                {label}
-            </p>
-            <p className="mt-1 text-3xl font-bold text-slate-950 dark:text-white">
-                {value}
-            </p>
-            <p className="mt-1 text-xs font-medium text-slate-400">{helper}</p>
+            <p className="text-sm font-semibold text-[var(--color-text-muted)]">{label}</p>
+            <p className="mt-1 text-2xl font-bold tabular-nums sm:text-3xl">{value}</p>
+            <p className="mt-1 hidden text-xs text-[var(--color-text-muted)] sm:block">{helper}</p>
         </article>
     );
 }
 
-function Panel({ title, description, icon, children, tone = "blue" }) {
-    const tones = {
-        green: "bg-green-50 text-[#58CC02] dark:bg-green-950",
-        blue: "bg-sky-50 text-[#1CB0F6] dark:bg-sky-950",
-        purple: "bg-purple-50 text-[#CE82FF] dark:bg-purple-950",
-        yellow: "bg-yellow-50 text-yellow-500 dark:bg-yellow-950",
-    };
-
+function Panel({ title, description, icon: Icon, action, children, compact = false }) {
     return (
-        <section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-lg shadow-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
-            <div className="mb-5 flex items-start gap-3">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${tones[tone] || tones.blue}`}>
-                    {icon}
+        <section className={`ui-panel ${compact ? "p-5" : "p-5 sm:p-6"}`}>
+            <div className="mb-5 flex items-start justify-between gap-4">
+                <div className="flex min-w-0 items-start gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary-soft)] text-[var(--color-primary-hover)]">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0">
+                        <h2 className="text-lg font-bold sm:text-xl">{title}</h2>
+                        <p className="mt-1 text-sm leading-5 text-[var(--color-text-muted)]">{description}</p>
+                    </div>
                 </div>
-                <div>
-                    <h2 className="text-xl font-bold text-slate-950 dark:text-white">
-                        {title}
-                    </h2>
-                    <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
-                        {description}
-                    </p>
-                </div>
+                {action && <div className="hidden shrink-0 sm:block">{action}</div>}
             </div>
             {children}
+            {action && <div className="mt-4 sm:hidden">{action}</div>}
         </section>
     );
 }
 
 function ScoreBlock({ label, value }) {
     return (
-        <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-950">
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                {label}
-            </p>
-            <div className="mt-2 flex items-end gap-1">
-                <span className="text-4xl font-bold text-slate-950 dark:text-white">
-                    {value}
-                </span>
-                <span className="mb-1 font-semibold text-slate-400">%</span>
-            </div>
+        <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+            <p className="text-sm font-semibold text-[var(--color-text-muted)]">{label}</p>
+            <p className="mt-2 text-3xl font-bold tabular-nums">{formatScore(value)}<span className="text-base text-[var(--color-text-muted)]">%</span></p>
         </div>
     );
 }
 
-function EmptyState({ title, description, actionLabel, to }) {
+function EmptyState({ icon: Icon, title, description, actionLabel, to }) {
     return (
-        <div className="rounded-2xl bg-slate-50 p-5 text-center dark:bg-slate-950">
-            <PlayCircle className="mx-auto mb-3 h-9 w-9 text-slate-300" />
-            <h3 className="font-bold text-slate-950 dark:text-white">{title}</h3>
-            <p className="mx-auto mt-1 max-w-sm text-sm font-medium text-slate-500 dark:text-slate-400">
-                {description}
-            </p>
-            <Link
-                to={to}
-                className="mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-4 py-2 text-sm font-bold text-white focus:outline-none focus:ring-4 focus:ring-green-100"
-            >
+        <div className="rounded-xl bg-[var(--color-surface-subtle)] px-5 py-7 text-center">
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-surface)] text-[var(--color-primary)]">
+                <Icon className="h-6 w-6" aria-hidden="true" />
+            </span>
+            <h3 className="mt-4 font-bold">{title}</h3>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--color-text-muted)]">{description}</p>
+            <Link to={to} className="ui-button ui-button-primary mt-5">
                 {actionLabel}
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Link>
         </div>
     );
+}
+
+function formatScore(value) {
+    const score = Number(value || 0);
+    return Number.isInteger(score) ? score.toString() : score.toFixed(1);
 }
 
 export default Dashboard;

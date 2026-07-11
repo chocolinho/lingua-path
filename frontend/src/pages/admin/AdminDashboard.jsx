@@ -57,7 +57,7 @@ function AdminDashboard() {
             value: stats?.totalUsers ?? 0,
             helper: `${stats?.adminUsers ?? 0} admins`,
             icon: Users,
-            color: "bg-sky-100 text-[#1CB0F6]",
+            color: "bg-sky-100 text-[#4338CA]",
         },
         {
             label: "Premium Users",
@@ -71,7 +71,7 @@ function AdminDashboard() {
             value: stats?.totalTopics ?? 0,
             helper: `${stats?.pendingTopics ?? 0} pending review`,
             icon: BookOpen,
-            color: "bg-green-100 text-[#58CC02]",
+            color: "bg-green-100 text-[#0F766E]",
         },
         {
             label: "Quiz Attempts",
@@ -95,10 +95,10 @@ function AdminDashboard() {
 
     return (
         <div className="app-page space-y-6">
-            <section className="kid-panel p-6 md:p-7">
+            <section className="ui-panel p-6 md:p-7">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1.5 text-sm font-bold text-[#1CB0F6] dark:bg-sky-950">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1.5 text-sm font-bold text-[#4338CA] dark:bg-sky-950">
                             <BarChart3 className="h-4 w-4" />
                             Admin analytics
                         </div>
@@ -110,7 +110,7 @@ function AdminDashboard() {
                         </p>
                     </div>
 
-                    <div className="rounded-[1.25rem] bg-slate-50 p-5 lg:min-w-72 dark:bg-slate-950">
+                    <div className="rounded-xl bg-slate-50 p-5 lg:min-w-72 dark:bg-slate-950">
                         <p className="text-sm font-bold text-slate-400">
                             Premium Conversion
                         </p>
@@ -119,7 +119,7 @@ function AdminDashboard() {
                         </p>
                         <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                             <div
-                                className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
+                                className="h-full rounded-full bg-[#0F766E] transition-all duration-700"
                                 style={{ width: `${conversionRate}%` }}
                             />
                         </div>
@@ -146,7 +146,7 @@ function AdminDashboard() {
                     return (
                         <article
                             key={card.label}
-                            className="kid-card p-4"
+                            className="ui-card p-4"
                         >
                             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-50 text-slate-500 dark:bg-slate-950">
                                 <Icon className="h-5 w-5" />
@@ -177,7 +177,7 @@ function AdminDashboard() {
                         <AlertCard
                             label="Monthly Plans"
                             value={stats?.monthlySubscriptions ?? 0}
-                            tone="bg-sky-50 text-[#1CB0F6]"
+                            tone="bg-sky-50 text-[#4338CA]"
                         />
                         <AlertCard
                             label="Premium Topics"
@@ -208,7 +208,7 @@ function AdminDashboard() {
                         label="Public Topics"
                         value={stats?.publicTopics ?? 0}
                         total={stats?.totalTopics ?? 0}
-                        color="bg-[#58CC02]"
+                        color="bg-[#0F766E]"
                     />
                     <ProgressRow
                         label="Premium Topics"
@@ -220,7 +220,7 @@ function AdminDashboard() {
                         label="Pending Topics"
                         value={stats?.pendingTopics ?? 0}
                         total={stats?.totalTopics ?? 0}
-                        color="bg-[#CE82FF]"
+                        color="bg-[#6D28D9]"
                     />
                 </Panel>
             </section>
@@ -241,7 +241,7 @@ function AdminDashboard() {
                                     className="flex items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4 dark:bg-slate-950"
                                 >
                                     <div className="flex min-w-0 items-center gap-3">
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white font-bold text-[#1CB0F6] dark:bg-slate-900">
+                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white font-bold text-[#4338CA] dark:bg-slate-900">
                                             #{index + 1}
                                         </div>
                                         <div className="min-w-0">
@@ -253,7 +253,7 @@ function AdminDashboard() {
                                             </p>
                                         </div>
                                     </div>
-                                    <p className="shrink-0 text-xl font-bold text-[#58CC02]">
+                                    <p className="shrink-0 text-xl font-bold text-[#0F766E]">
                                         {user.xp ?? 0} XP
                                     </p>
                                 </div>
@@ -285,7 +285,7 @@ function AdminDashboard() {
                                                 {topic.visibility} - {topic.accessType} - {topic.approvalStatus}
                                             </p>
                                         </div>
-                                        <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#1CB0F6] dark:bg-slate-900">
+                                        <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[#4338CA] dark:bg-slate-900">
                                             {topic.vocabularyCount} words
                                         </span>
                                     </div>
@@ -309,7 +309,7 @@ function AdminDashboard() {
 
 function MetricCard({ label, value, helper, icon: Icon, color }) {
     return (
-        <article className="kid-card p-5">
+        <article className="ui-card p-5">
             <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}>
                 <Icon className="h-7 w-7" />
             </div>
@@ -322,9 +322,9 @@ function MetricCard({ label, value, helper, icon: Icon, color }) {
 
 function Panel({ title, description, icon, children }) {
     return (
-        <section className="kid-panel p-5">
+        <section className="ui-panel p-5">
             <div className="mb-5 flex items-start gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1CB0F6] dark:bg-sky-950">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#4338CA] dark:bg-sky-950">
                     {icon}
                 </div>
                 <div>
@@ -350,7 +350,7 @@ function QuickAction({ to, icon, children }) {
     return (
         <Link
             to={to}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 transition-all hover:-translate-y-0.5 hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-slate-100 dark:bg-slate-800 dark:text-slate-200"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 transition-all  hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-slate-100 dark:bg-slate-800 dark:text-slate-200"
         >
             {icon}
             {children}
@@ -410,7 +410,7 @@ function RecentPayments({ payments }) {
                                 ${payment.amount}
                             </td>
                             <td className="p-4">
-                                <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-[#58CC02] dark:bg-green-950">
+                                <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-[#0F766E] dark:bg-green-950">
                                     {payment.status}
                                 </span>
                             </td>

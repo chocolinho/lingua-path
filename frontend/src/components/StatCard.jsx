@@ -1,6 +1,6 @@
 function StatCard({ icon, title, value, subtitle, color }) {
     return (
-        <div className="kid-card p-5">
+        <div className="ui-card p-5">
             <div className="flex items-center gap-4">
                 <div
                     className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl ${color}`}
@@ -13,7 +13,7 @@ function StatCard({ icon, title, value, subtitle, color }) {
                         {title}
                     </p>
 
-                    <h3 className="mt-1 truncate text-3xl font-black text-slate-900 dark:text-white">
+                    <h3 className="mt-1 truncate text-3xl font-bold text-slate-900 dark:text-white">
                         {value}
                     </h3>
 

@@ -1,33 +1,26 @@
 # CLAUDE.md
 
-Project-specific guidance for AI coding agents.
+Project-specific guidance for frontend work.
 
-<!-- ASTRYX:START -->
-Astryx v0.1.3 · 149 components
-CLI: run every command as `npx astryx <cmd>` (shown below as `astryx ...`).
+## Stack and boundaries
 
-SETUP (once, in your app entry e.g. main.tsx) — without these, components render unstyled:
-  import "@astryxdesign/core/reset.css";
-  import "@astryxdesign/core/astryx.css";
+- Use React, Vite, Tailwind CSS 4, React Router, Axios, and Lucide icons.
+- Keep all frontend API URLs unchanged and reuse `src/services/*`.
+- Preserve JWT storage under `localStorage["token"]` and the Axios bearer interceptor.
+- Do not invent backend endpoints or response fields.
 
-WORKFLOW — discover, don't guess. Before writing UI:
-1. `astryx build "<idea>"` — START HERE: returns a kit (closest [page] + [block]s + [component]s). No args = full playbook.
-2. `astryx template <name> [--skeleton]` — scaffold the [page]/[block]s it named, or study their layout. Templates are reference code.
-3. `astryx component <Name>` — props + examples for every component you use.
+## UI foundation
 
-RULES:
-- No <div> — components do all layout/spacing. Full page → AppShell; sidebar nav → SideNav.
-- Frame first: pick the shell (AppShell / Layout+LayoutPanel) and budget regions in px BEFORE writing content (`astryx docs layout`).
-- Dense data = rows (Table, List/Item) edge-to-edge — never Card-wrapped list items. Card = dashboard widgets, galleries, settings groups only.
-- Status → StatusDot/Token; Badge only for counts and enumerated states, never decoration.
-- Custom styling: component props first; else Tailwind utilities backed by tokens (bg-surface, text-primary, rounded-lg) via tailwind-theme.css. No raw hex/px.
-- Tokens for every value (`astryx docs tokens`). Brand/accent via `astryx theme` — never override --color-* in :root.
+- Treat `src/index.css` as the source of truth for primitive, semantic, and component tokens.
+- Use the `ui-*` foundation classes for panels, cards, buttons, inputs, badges, and modals.
+- Prefer semantic tokens over raw colors and one-off shadows.
+- Maintain WCAG AA contrast, visible focus states, 44px minimum touch targets, and reduced-motion support.
+- Build mobile-first and verify 375px, 768px, 1024px, and 1440px layouts.
+- Keep the product voice professional, encouraging, and suitable for learners across proficiency levels.
 
-MORE CLI:
-  search "<query>"   find any component / hook / doc / template / block
-  component --list   149 components by category
-  template --list    page + block recipes
-  docs <topic>       color, elevation, icons, illustrations, layout, migration, motion, principles, shape, spacing, styling, theme, tokens, typography
-  swizzle <Name>     eject component source for deep customization
-  upgrade --apply    run after any @astryxdesign/core bump
-<!-- ASTRYX:END -->
+## Component behavior
+
+- Use semantic HTML and visible form labels.
+- Associate errors with their fields and announce asynchronous errors with `role="alert"`.
+- Dialogs must support focus trapping, Escape, focus restoration, and scroll locking.
+- Use Lucide consistently; do not use emoji as structural icons.

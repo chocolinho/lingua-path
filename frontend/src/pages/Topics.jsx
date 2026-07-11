@@ -111,13 +111,13 @@ function Topics() {
                 onClose={() => setPremiumModalOpen(false)}
             />
 
-            <section className="kid-panel-soft mb-6 p-6 md:p-8">
+            <section className="ui-panel-accent mb-6 p-6 md:p-8">
                 <div>
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-100 px-3 py-1.5 text-sm font-black text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-100 px-3 py-1.5 text-sm font-bold text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
                         <Crown className="h-4 w-4" />
                         Topic workspace
                     </div>
-                    <h1 className="text-3xl font-black text-slate-950 dark:text-white md:text-5xl">
+                    <h1 className="text-3xl font-bold text-slate-950 dark:text-white md:text-5xl">
                         Manage Topics
                     </h1>
                     <p className="mt-3 max-w-2xl font-semibold leading-7 text-slate-600 dark:text-slate-300">
@@ -126,7 +126,7 @@ function Topics() {
                 </div>
             </section>
 
-            <section className="kid-panel mb-6 p-5">
+            <section className="ui-panel mb-6 p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
                         <div
@@ -158,7 +158,7 @@ function Topics() {
                         <button
                             type="button"
                             onClick={() => setPremiumModalOpen(true)}
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-100 px-5 py-3 font-bold text-yellow-700 transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-yellow-100"
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-100 px-5 py-3 font-bold text-yellow-700 transition-all  focus:outline-none focus:ring-4 focus:ring-yellow-100"
                         >
                             <Crown className="h-5 w-5" />
                             Upgrade
@@ -169,7 +169,7 @@ function Topics() {
 
             <form
                 onSubmit={handleSubmit}
-                className="kid-panel mb-6 p-6"
+                className="ui-panel mb-6 p-6"
             >
                 <h2 className="mb-4 text-xl font-bold text-slate-950 dark:text-white">
                     {editingId ? "Edit Topic" : "Add New Topic"}
@@ -186,14 +186,14 @@ function Topics() {
                         type="text"
                         placeholder="Topic name"
                         aria-label="Topic name"
-                        className="kid-input flex-1 p-4"
+                        className="ui-input flex-1 p-4"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
 
                     <button
                         type="submit"
-                        className="kid-button kid-button-green px-7 py-4"
+                        className="ui-button ui-button-primary px-7 py-4"
                     >
                         {editingId ? "Update Topic" : "Add Topic"}
                     </button>
@@ -202,7 +202,7 @@ function Topics() {
                         <button
                             type="button"
                             onClick={resetForm}
-                            className="rounded-2xl bg-slate-100 px-7 py-4 font-bold text-slate-600 transition-all hover:-translate-y-0.5 hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-slate-100 dark:bg-slate-800 dark:text-slate-200"
+                            className="rounded-2xl bg-slate-100 px-7 py-4 font-bold text-slate-600 transition-all  hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-slate-100 dark:bg-slate-800 dark:text-slate-200"
                         >
                             Cancel
                         </button>
@@ -210,7 +210,7 @@ function Topics() {
                 </div>
             </form>
 
-            <div className="kid-panel overflow-hidden">
+            <div className="ui-panel overflow-hidden">
                 <div className="border-b border-slate-100 p-6 dark:border-slate-800">
                     <h2 className="text-xl font-bold text-slate-950 dark:text-white">
                         Topic List
@@ -269,7 +269,7 @@ function Topics() {
                                         className={`rounded-full px-3 py-1 text-sm font-bold ${
                                             topic.accessType === "PREMIUM"
                                                 ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-200"
-                                                : "bg-green-50 text-[#58CC02] dark:bg-green-950"
+                                                : "bg-green-50 text-[#0F766E] dark:bg-green-950"
                                         }`}
                                     >
                                         {topic.accessType || "FREE"}
@@ -283,7 +283,7 @@ function Topics() {
                                             onClick={() =>
                                                 handleEdit(topic)
                                             }
-                                            className="rounded-xl bg-sky-50 px-4 py-2 font-bold text-[#1CB0F6] transition-all hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
+                                            className="rounded-xl bg-sky-50 px-4 py-2 font-bold text-[#4338CA] transition-all hover:bg-sky-100 focus:outline-none focus:ring-4 focus:ring-sky-100 dark:bg-sky-950"
                                         >
                                             Edit
                                         </button>

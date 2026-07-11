@@ -76,9 +76,9 @@ function Learn() {
 
     const getTopicColor = (index) => {
         const colors = [
-            "bg-green-100 text-[#58CC02]",
+            "bg-green-100 text-[#0F766E]",
             "bg-yellow-100 text-yellow-500",
-            "bg-blue-100 text-[#1CB0F6]",
+            "bg-blue-100 text-[#4338CA]",
             "bg-purple-100 text-purple-500",
             "bg-orange-100 text-orange-500",
             "bg-teal-100 text-teal-500",
@@ -137,8 +137,8 @@ function Learn() {
             )}
 
             <section className="grid gap-5 xl:grid-cols-[1fr_340px]">
-                <div className="kid-panel p-6 md:p-7">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#58CC02] dark:bg-green-950">
+                <div className="ui-panel p-6 md:p-7">
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#0F766E] dark:bg-green-950">
                             <Sparkles className="h-4 w-4" />
                             {isPremium ? "Premium library" : "Flashcard learning"}
                     </div>
@@ -151,18 +151,18 @@ function Learn() {
                     </p>
 
                     <div className="mt-6 flex flex-wrap gap-3">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-bold text-[#58CC02] dark:bg-green-950">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-bold text-[#0F766E] dark:bg-green-950">
                             <BookOpen className="h-4 w-4" />
                             {availableLessons} ready topics
                         </span>
-                        <span className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-4 py-2 text-sm font-bold text-[#1CB0F6] dark:bg-sky-950">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-4 py-2 text-sm font-bold text-[#4338CA] dark:bg-sky-950">
                             <Brain className="h-4 w-4" />
                             {vocabularies.length} total words
                         </span>
                     </div>
                 </div>
 
-                <div className="kid-panel p-6">
+                <div className="ui-panel p-6">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-50 text-yellow-600 dark:bg-yellow-950 dark:text-yellow-300">
                         <Crown className="h-6 w-6" />
                     </div>
@@ -194,13 +194,13 @@ function Learn() {
                         value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
                         placeholder="Search topics"
-                        className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 font-semibold outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                        className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 font-semibold outline-none transition-all focus:border-[#0F766E] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                     />
                 </div>
             </div>
 
             {topics.length === 0 ? (
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <BookOpen className="mx-auto mb-4 h-12 w-12 text-slate-300" />
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         No topics found
@@ -210,7 +210,7 @@ function Learn() {
                     </p>
                     <Link
                         to="/topics"
-                        className="mt-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-6 py-3 font-bold text-white focus:outline-none focus:ring-4 focus:ring-green-100"
+                        className="mt-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-6 py-3 font-bold text-white focus:outline-none focus:ring-4 focus:ring-green-100"
                     >
                         Manage Topics
                         <ArrowRight className="h-4 w-4" />
@@ -228,7 +228,7 @@ function Learn() {
                         return (
                             <article
                                 key={topic.id}
-                                className={`kid-card p-5 ${
+                                className={`ui-card p-5 ${
                                     hasWords
                                         ? "dark:hover:border-green-900"
                                         : "opacity-70"
@@ -246,7 +246,7 @@ function Learn() {
                                             className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
                                                 isPremiumTopic
                                                     ? "bg-yellow-100 text-yellow-600"
-                                                    : "bg-green-50 text-[#58CC02]"
+                                                    : "bg-green-50 text-[#0F766E]"
                                             }`}
                                         >
                                             {isPremiumTopic && (
@@ -257,7 +257,7 @@ function Learn() {
                                         <span
                                             className={`rounded-full px-3 py-1 text-xs font-bold ${
                                                 canStart
-                                                    ? "bg-green-50 text-[#58CC02]"
+                                                    ? "bg-green-50 text-[#0F766E]"
                                                     : "bg-slate-100 text-slate-400"
                                             }`}
                                         >
@@ -275,7 +275,7 @@ function Learn() {
                                 </p>
 
                                 <div className="mt-5 flex items-center gap-3 rounded-2xl bg-slate-50 p-3 dark:bg-slate-950">
-                                    <Brain className="h-5 w-5 text-[#1CB0F6]" />
+                                    <Brain className="h-5 w-5 text-[#4338CA]" />
                                     <span className="text-sm font-bold text-slate-600 dark:text-slate-300">
                                         {topic.vocabularyCount} vocabulary words
                                     </span>
@@ -284,7 +284,7 @@ function Learn() {
                                 {canStart ? (
                                     <Link
                                         to={`/learn/${topic.id}`}
-                                        className="mt-5 flex items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-5 py-3 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100"
+                                        className="mt-5 flex items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-5 py-3 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100"
                                     >
                                         <PlayCircle className="h-5 w-5" />
                                         Start Flashcards
@@ -293,7 +293,7 @@ function Learn() {
                                     <button
                                         type="button"
                                         onClick={() => setPremiumModalOpen(true)}
-                                        className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-yellow-100 px-5 py-3 font-bold text-yellow-700 transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-yellow-100"
+                                        className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-yellow-100 px-5 py-3 font-bold text-yellow-700 transition-all  focus:outline-none focus:ring-4 focus:ring-yellow-100"
                                     >
                                         <Lock className="h-5 w-5" />
                                         Unlock Premium

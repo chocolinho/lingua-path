@@ -8,7 +8,7 @@ function BadgeCard({ icon, title, description, color }) {
             </div>
 
             <div>
-                <h4 className="font-black text-slate-800">
+                <h4 className="font-bold text-slate-800">
                     {title}
                 </h4>
 

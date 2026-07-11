@@ -99,10 +99,10 @@ function Profile() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6">
-            <section className="kid-panel overflow-hidden p-6 md:p-7">
+            <section className="ui-panel overflow-hidden p-6 md:p-7">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#58CC02] dark:bg-green-950">
+                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-bold text-[#0F766E] dark:bg-green-950">
                             <UserRound className="h-4 w-4" />
                             Learner profile
                         </div>
@@ -115,7 +115,7 @@ function Profile() {
                         </p>
                     </div>
 
-                    <div className="rounded-[1.25rem] bg-slate-50 p-5 lg:min-w-80 dark:bg-slate-950">
+                    <div className="rounded-xl bg-slate-50 p-5 lg:min-w-80 dark:bg-slate-950">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-bold text-slate-400">
@@ -136,7 +136,7 @@ function Profile() {
                             aria-valuemax={100}
                         >
                             <div
-                                className="h-full rounded-full bg-[#58CC02] transition-all duration-700"
+                                className="h-full rounded-full bg-[#0F766E] transition-all duration-700"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
@@ -152,7 +152,7 @@ function Profile() {
                     role="status"
                     className={`flex items-center gap-3 rounded-2xl p-4 font-semibold ${
                         message
-                            ? "bg-green-50 text-[#58CC02]"
+                            ? "bg-green-50 text-[#0F766E]"
                             : "bg-red-50 text-red-500"
                     }`}
                 >
@@ -176,7 +176,7 @@ function Profile() {
                     icon={<Trophy className="h-7 w-7" />}
                     label="Current Level"
                     value={level}
-                    color="bg-purple-100 text-[#CE82FF]"
+                    color="bg-purple-100 text-[#6D28D9]"
                 />
                 <ProfileStat
                     icon={<Flame className="h-7 w-7" />}
@@ -187,7 +187,7 @@ function Profile() {
             </div>
 
             <section
-                    className={`rounded-[1.75rem] border-2 p-6 shadow-sm ${
+                    className={`rounded-2xl border-2 p-6 shadow-sm ${
                     isPremium
                         ? "border-yellow-100 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-950/40"
                         : "border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900"
@@ -221,7 +221,7 @@ function Profile() {
                     {!isPremium && (
                         <Link
                             to="/premium"
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-bold text-slate-950 shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-yellow-100"
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-bold text-slate-950 shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-yellow-100"
                         >
                             <Crown className="h-5 w-5" />
                             Upgrade to Premium
@@ -233,7 +233,7 @@ function Profile() {
             <div className="grid gap-5 lg:grid-cols-2">
                 <form
                     onSubmit={handleProfileSubmit}
-                    className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
                 >
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         Account
@@ -255,7 +255,7 @@ function Profile() {
                             value={username}
                             autoComplete="username"
                             onChange={(event) => setUsername(event.target.value)}
-                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-4 pl-12 pr-4 font-semibold outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                            className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-4 pl-12 pr-4 font-semibold outline-none transition-all focus:border-[#0F766E] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                         />
                     </div>
 
@@ -278,7 +278,7 @@ function Profile() {
                     <button
                         type="submit"
                         disabled={savingProfile}
-                        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#58CC02] px-6 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0F766E] px-6 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                     >
                         <Save className="h-5 w-5" />
                         {savingProfile ? "Saving..." : "Save Profile"}
@@ -287,7 +287,7 @@ function Profile() {
 
                 <form
                     onSubmit={handlePasswordSubmit}
-                    className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                    className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
                 >
                     <h2 className="text-2xl font-bold text-slate-950 dark:text-white">
                         Password
@@ -335,7 +335,7 @@ function Profile() {
                     <button
                         type="submit"
                         disabled={savingPassword}
-                        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#1CB0F6] px-6 py-4 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4338CA] px-6 py-4 font-bold text-white shadow-sm transition-all  focus:outline-none focus:ring-4 focus:ring-sky-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                     >
                         <Lock className="h-5 w-5" />
                         {savingPassword ? "Changing..." : "Change Password"}
@@ -348,7 +348,7 @@ function Profile() {
 
 function ProfileStat({ icon, label, value, color }) {
     return (
-        <div className="kid-card p-5">
+        <div className="ui-card p-5">
             <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${color}`}>
                 {icon}
             </div>
@@ -368,7 +368,7 @@ function PasswordInput({ id, value, autoComplete, onChange }) {
                 value={value}
                 autoComplete={autoComplete}
                 onChange={(event) => onChange(event.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-4 pl-12 pr-4 font-semibold outline-none transition-all focus:border-[#58CC02] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-4 pl-12 pr-4 font-semibold outline-none transition-all focus:border-[#0F766E] focus:ring-4 focus:ring-green-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
             />
         </div>
     );
