@@ -14,3 +14,9 @@ app:
 jwt:
   secret: ${JWT_SECRET:my-super-secret-key-my-super-secret-key-123456}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+ai:
+  provider:
+    base-url: ${AI_PROVIDER_BASE_URL:https://generativelanguage.googleapis.com/v1beta}
+    api-key: ${AI_PROVIDER_API_KEY:}
+    model: ${AI_PROVIDER_MODEL:gemini-3.1-flash-lite}

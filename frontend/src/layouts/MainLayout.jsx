@@ -14,6 +14,7 @@ import {
     LibraryBig,
     LogOut,
     Menu,
+    MessageCircle,
     Receipt,
     ShieldCheck,
     Sparkles,
@@ -65,6 +66,7 @@ function MainLayout() {
             items: [
                 { to: "/topics", label: t("topics"), icon: LibraryBig },
                 { to: "/favorites", label: t("favorites"), icon: Heart },
+                { to: "/ai-tutor", label: "AI Tutor", icon: MessageCircle },
             ],
         },
         {

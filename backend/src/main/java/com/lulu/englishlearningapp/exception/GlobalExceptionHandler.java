@@ -45,6 +45,13 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
+    @ExceptionHandler(AiTutorException.class)
+    public ResponseEntity<Map<String, String>> handleAiTutorException(
+            AiTutorException ex) {
+
+        return error(HttpStatus.BAD_GATEWAY, ex.getMessage());
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, String>> handleAuthenticationException(
             AuthenticationException ex) {

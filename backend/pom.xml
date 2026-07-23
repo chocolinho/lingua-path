@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.lulu</groupId>
-    <artifactId>english-learning-app</artifactId>
+    <artifactId>lingua-path</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>english-learning-app</name>
-    <description>english-learning-app</description>
+    <name>LinguaPath</name>
+    <description>Full-stack English learning platform with AI tutoring</description>
     <url/>
     <licenses>
         <license/>

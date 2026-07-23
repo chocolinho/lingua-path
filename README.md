@@ -1,6 +1,6 @@
-# English Learning Platform
+# LinguaPath
 
-A full-stack English learning application for primary-school learners, with a focused learner experience and a separate administration area. Learners can study vocabulary by topic, practise with flashcards and quizzes, review mistakes, track progress, and earn achievements. Administrators can manage learning content and monitor platform activity.
+LinguaPath is a full-stack English learning application for primary-school learners, with a focused learner experience and a separate administration area. Learners can study vocabulary by topic, practise with flashcards and quizzes, review mistakes, track progress, use an AI English Tutor, and earn achievements. Administrators can manage learning content and monitor platform activity.
 
 ## Live Demo
 
@@ -34,6 +34,7 @@ Key engineering work:
 - Role-based authorization for `USER` and `ADMIN`
 - Topic-based vocabulary learning with search, pagination, favourites, and pronunciation
 - Flashcards, topic quizzes, result history, and wrong-answer review
+- AI English Tutor for vocabulary help, grammar correction, examples, and simple conversation practice
 - XP, levels, daily streaks, achievements, rankings, and learning analytics
 - Free and premium access rules with mock checkout and payment history
 - Admin dashboard, platform statistics, topic moderation, and content management
@@ -61,6 +62,7 @@ Key engineering work:
 - Browse public learning topics and access content according to the assigned plan
 - Search vocabulary, study flashcards, hear browser-based pronunciation, and save favourites
 - Complete quizzes generated from topic vocabulary and review previous results
+- Ask the AI English Tutor for age-appropriate vocabulary, grammar, sentence, and conversation help
 - Revisit incorrect answers and monitor vocabulary progress
 - Track XP, level, streak, achievements, ranking, and personal analytics
 
@@ -193,6 +195,9 @@ npm run dev
 | `JWT_EXPIRATION_MS` | Token lifetime in milliseconds |
 | `APP_CORS_ALLOWED_ORIGINS` | Comma-separated permitted frontend origins |
 | `SWAGGER_ENABLED` | Enables or disables production API documentation |
+| `AI_PROVIDER_API_KEY` | Gemini API key used by AI English Tutor |
+| `AI_PROVIDER_MODEL` | Gemini model for AI English Tutor, defaults to `gemini-3.1-flash-lite` |
+| `AI_PROVIDER_BASE_URL` | Optional Gemini API base URL, defaults to `https://generativelanguage.googleapis.com/v1beta` |
 
 ### Frontend
 

@@ -25,6 +25,7 @@ const Premium = lazy(() => import("./pages/Premium"));
 const PaymentHistory = lazy(() => import("./pages/PaymentHistory"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Ranking = lazy(() => import("./pages/Ranking"));
+const AiTutor = lazy(() => import("./pages/AiTutor"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminTopics = lazy(() => import("./pages/admin/AdminTopics"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -70,6 +71,7 @@ function App() {
                         <Route path="/payments" element={<PaymentHistory />} />
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/ranking" element={<Ranking />} />
+                        <Route path="/ai-tutor" element={<AiTutor />} />
                     </Route>
                     <Route path="*" element={<NotFound />} />
                 </Routes>
